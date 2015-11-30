@@ -75,7 +75,7 @@ template < class T > void logT < T >::writeL(int logtype, const char* lformat,..
 		va_end(st);
 		cout << strlog << endl;*/
 		string strlog = llev2fmt(lformat);
-	//	cout << strlog << endl;
+		cout << strlog << endl;
 		_logfile << strlog << endl;
 	}
 
@@ -219,7 +219,6 @@ static string lfmt(const char *lformat, va_list st)
 	//va_start(st, lformat);
 	vsprintf(strlog, lformat, st);
 	va_end(st);
-	//cout << strlog << endl;
 	return strlog;
 }
 
