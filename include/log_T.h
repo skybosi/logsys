@@ -16,8 +16,8 @@ static string lfmt(va_list st,const char *lformat,...);
 template < class T > class logT
 {
 	private:
-		int _loglevel;		//log çš„æ˜¾ç¤ºæœ€ä½çº§åˆ«
-		int _lognum;		// å½“å‰è®¾ç½®logçº§åˆ«
+		int _loglevel;		//log¿¿¿¿¿¿¿ 		
+		int _lognum;		//¿¿¿¿log¿¿
 		ofstream _logfile;
 		string _classname;
 		string _strlog;
@@ -25,10 +25,10 @@ template < class T > class logT
 		logT();
 		~logT()
 		{
-			cout << "logT å»ä¸–äº†" << endl;
+			cout << "logT will dead" << endl;
 			_logfile.close();
 		};
-		void writeL(int logtype, const char* lformat,...);
+		void writeL(int logtype,va_list st,const char *lformat,...);
 		void help();
 	private:
 		string llev2str();
@@ -37,7 +37,7 @@ template < class T > class logT
 
 template < class T > logT < T >::logT():_loglevel(3)
 {
-	cout << "logT å‡ºä¸–äº†" << endl;
+	cout << "logT come on" << endl;
 	string log_filename;
 	log_filename = typeid(T).name();
 	log_filename = "./tmp/" + log_filename.substr(1)+".log_1";
@@ -51,7 +51,7 @@ template < class T > logT < T >::logT():_loglevel(3)
 	_classname = _classname.substr(1);	//å»æ‰ç±»åé•¿åº¦
 };
 
-template < class T > void logT < T >::writeL(int logtype, const char* lformat,...)
+template < class T > void logT < T >::writeL(int logtype,va_list st,const char *lformat,...)
 {
 	//T clas;
 	_lognum = logtype;
@@ -69,8 +69,8 @@ template < class T > void logT < T >::writeL(int logtype, const char* lformat,..
 			va_end(st);
 			cout << strlog << endl;
 			*/
-		va_list st;
-		va_start(st, lformat);
+// 		va_list st;
+// 		va_start(st, lformat);
 		_strlog = lfmt(st,lformat);
 		cout << _strlog << endl;
 		_logfile << _strlog << endl;

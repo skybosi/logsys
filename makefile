@@ -3,7 +3,7 @@ CC_FLAG = -g -Wall -I
 INCLUDE = include
 SRC = src/*.cpp
 TARGET = bin/logsys
-TEMPFILE = source/
+TEMPFILE = tmp/*
 TESTFILE = source/test.txt
 OUTFILE = source/result.txt
 
@@ -11,7 +11,7 @@ $(TARGET):$(SRC)
 	$(CC) $(CC_FLAG) $(INCLUDE) $(SRC) -o $(TARGET)
 
 clean:				
-	rm $(TARGET)
+	rm $(TARGET) $(TEMPFILE)
 test:
 	@./$(TARGET) $(TESTFILE) $(OUTFILE)
 debug:
