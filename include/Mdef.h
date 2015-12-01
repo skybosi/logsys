@@ -13,5 +13,6 @@ enum log_level
 	LOG_DEBUG
 };
 #define BLK " "
+#define MAX_LINE_LOG 2048
 
 #endif // _MDEF_H_ mdef.h header file

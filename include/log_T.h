@@ -12,8 +12,8 @@
 #include "Mdef.h"
 using namespace std;
 static string getime();
-static string lfmt(const char *lformat, va_list st);
-template < class T > class logT : public T
+static string lfmt(va_list st,const char *lformat,...);
+template < class T > class logT
 {
 	private:
 		int _loglevel;		//log 的显示最低级别
@@ -25,25 +25,19 @@ template < class T > class logT : public T
 		logT();
 		~logT()
 		{
+			cout << "logT 去世了" << endl;
 			_logfile.close();
 		};
 		void writeL(int logtype, const char* lformat,...);
-		string llev2fmt(const char* lformat);
 		void help();
 	private:
-		string debug( const char* fmt, ... ) PRINTFLIKE(2,3);
-		string info( const char* fmt, ... ) PRINTFLIKE(2,3);
-		string notice( const char* fmt, ... ) PRINTFLIKE(2,3);
-		string warning( const char* fmt, ... ) PRINTFLIKE(2,3);
-		string error( const char* fmt, ... ) PRINTFLIKE(2,3);
-		string bad( const char* fmt, ... ) PRINTFLIKE(2,3);
-		string core( const char* fmt, ... ) PRINTFLIKE(2,3);
 		string llev2str();
 		// oftream help();
 };
 
 template < class T > logT < T >::logT():_loglevel(3)
 {
+	cout << "logT 出世了" << endl;
 	string log_filename;
 	log_filename = typeid(T).name();
 	log_filename = "./tmp/" + log_filename.substr(1)+".log_1";
@@ -66,70 +60,24 @@ template < class T > void logT < T >::writeL(int logtype, const char* lformat,..
 		_logfile << getime() << BLK;
 		_logfile << "[ " << _classname << " ]" << BLK;
 		_logfile << llev2str()  << BLK;
-		//lfmt(lformat);
-	/*	char strlog[2048];
-		memset(&strlog, 0, sizeof(strlog));
+		/*	
+			char strlog[2048];
+			memset(&strlog, 0, sizeof(strlog));
+			va_list st;
+			va_start(st, lformat);
+			vsprintf(strlog, lformat, st);
+			va_end(st);
+			cout << strlog << endl;
+			*/
 		va_list st;
 		va_start(st, lformat);
-		vsprintf(strlog, lformat, st);
-		va_end(st);
-		cout << strlog << endl;*/
-		string strlog = llev2fmt(lformat);
-		cout << strlog << endl;
-		_logfile << strlog << endl;
+		_strlog = lfmt(st,lformat);
+		cout << _strlog << endl;
+		_logfile << _strlog << endl;
 	}
 
 }
-template < class T > 
-string logT<T>::debug( const char* fmt, ... ) {
-	va_list args;
-	va_start(args, fmt);
-	return lfmt(fmt,args);
-}
-
-template < class T > 
-string logT<T>::info( const char* fmt, ... ) {
-	va_list args;
-	va_start(args, fmt);
-	return lfmt(fmt,args);
-}
-
-template < class T > 
-string logT<T>::notice( const char* fmt, ... ) {
-	va_list args;
-	va_start(args, fmt);
-	return lfmt(fmt,args);
-}
-
-template < class T > 
-string logT<T>::warning( const char* fmt, ... ) {
-	va_list args;
-	va_start(args, fmt);
-	return lfmt(fmt,args);
-}
-
-template < class T > 
-string logT<T>::error( const char* fmt, ... ) {
-	va_list args;
-	va_start(args, fmt);
-	return lfmt(fmt,args);
-}
-
-template < class T > 
-string logT<T>::bad( const char* fmt, ... ) {
-	va_list args;
-	va_start(args, fmt);
-	return lfmt(fmt,args);
-}
-
-template < class T > 
-string logT<T>::core( const char* fmt, ... ) {
-	va_list args;
-	va_start(args, fmt);
-	return lfmt(fmt,args);
-}
-
- template < class T > string logT<T>::llev2str()
+template < class T > string logT<T>::llev2str()
 {
 	string Sloglev;
 	switch (_lognum)
@@ -162,40 +110,6 @@ string logT<T>::core( const char* fmt, ... ) {
 	return Sloglev;
 }
 
-template <class T>
-string logT<T>::llev2fmt(const char* lformat)
-{
-	string Sloglev;
-	switch (_lognum)
-	{
-		case 0:
-			Sloglev = logT<T>::core(lformat);
-			break;
-		case 1:
-			Sloglev = logT<T>::bad(lformat) ;
-			break;
-		case 2:
-			Sloglev = logT<T>::error(lformat);
-			break;
-		case 3:
-			Sloglev = logT<T>::warning(lformat);
-			break;
-		case 4:
-			Sloglev = logT<T>::notice(lformat);
-			break;
-		case 5:
-			Sloglev = logT<T>::info(lformat);
-			break;
-		case 6:
-			Sloglev = logT<T>::debug(lformat);
-			break;
-		default:
-			Sloglev = "[ Unkown loglevel ]: ";
-			break;
-	}
-	return Sloglev;
-}
-
 template < class T > void logT < T >::help()
 {
 	string helpdoc;
@@ -208,16 +122,14 @@ static string getime()
 	time_t now_time = time(NULL);;
 	char curtime[64];
 	memset(&curtime, 0, sizeof(curtime));
-	strftime(curtime, sizeof(curtime), "%X %Y-%m-%d %a %z", localtime(&now_time));
+	strftime(curtime, sizeof(curtime), "%Y-%m-%d %X %a %z", localtime(&now_time));
 	return curtime;
 }
-static string lfmt(const char *lformat, va_list st)
+static string lfmt(va_list st,const char *lformat,...)
 {
-	char strlog[2048];
+	char strlog[MAX_LINE_LOG];
 	memset(&strlog, 0, sizeof(strlog));
-	//va_list st;
-	//va_start(st, lformat);
-	vsprintf(strlog, lformat, st);
+	vsnprintf(strlog,sizeof(strlog)-1, lformat, st);
 	va_end(st);
 	return strlog;
 }

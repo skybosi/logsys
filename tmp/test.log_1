@@ -1,2 +1,9 @@
-16:44:32 2015-11-30 Mon +0800 [ test ] [ LOG_DEBUG ]:  info info ...  9093160
-17:58:35 2015-11-30 Mon +0800 [ test ] [ LOG_DEBUG ]:  info info ...  31535144
+09:28:05 2015-12-01 Tue +0800 [ test ] [ LOG_DEBUG ]:  debug debug ...              format         6
+09:28:06 2015-12-01 Tue +0800 [ test ] [ LOG_DEBUG ]:  debug debug ...              format         6
+09:28:06 2015-12-01 Tue +0800 [ test ] [ LOG_DEBUG ]:  debug debug ...              format         6
+09:28:44 2015-12-01 Tue +0800 [ test ] [ LOG_DEBUG ]:  debug debug ...              format         6
+2015-12-01 09:28:56 Tue +0800 [ test ] [ LOG_DEBUG ]:  debug debug ...              format         6
+2015-12-01 11:26:20 Tue +0800 [ test ] [ LOG_DEBUG ]:  debug debug ...              format         6
+2015-12-01 11:37:40 Tue +0800 [ test ] [ LOG_DEBUG ]:  debug debug ...              format         6
+2015-12-01 12:53:26 Tue +0800 [ test ] [ LOG_DEBUG ]:  debug debug ...              format         6
+2015-12-01 13:52:05 Tue +0800 [ test ] [ LOG_DEBUG ]:  debug debug ...              format         6
