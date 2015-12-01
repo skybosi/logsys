@@ -28,7 +28,7 @@ template < class T > class logT
 			cout << "logT will dead" << endl;
 			_logfile.close();
 		};
-		void writeL(int logtype,va_list st,const char *lformat,...);
+		void writeL(int logtype,const char *lformat,...);
 		void help();
 	private:
 		string llev2str();
@@ -51,7 +51,7 @@ template < class T > logT < T >::logT():_loglevel(3)
 	_classname = _classname.substr(1);	//去掉类名长度
 };
 
-template < class T > void logT < T >::writeL(int logtype,va_list st,const char *lformat,...)
+template < class T > void logT < T >::writeL(int logtype,const char *lformat,...)
 {
 	//T clas;
 	_lognum = logtype;
@@ -69,8 +69,8 @@ template < class T > void logT < T >::writeL(int logtype,va_list st,const char *
 			va_end(st);
 			cout << strlog << endl;
 			*/
-// 		va_list st;
-// 		va_start(st, lformat);
+ 		va_list st;
+ 		va_start(st, lformat);
 		_strlog = lfmt(st,lformat);
 		cout << _strlog << endl;
 		_logfile << _strlog << endl;
