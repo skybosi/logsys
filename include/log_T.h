@@ -7,6 +7,7 @@
 #include <typeinfo>
 #include <stdarg.h>
 #include <fstream>
+#include <sstream>
 #include <cstdlib>
 #include <cstring>
 #include "Mdef.h"
@@ -16,11 +17,12 @@ static string lfmt(va_list st,const char *lformat,...);
 template < class T > class logT
 {
 	private:
-		int _loglevel;		//log¿¿¿¿¿¿¿ 		
-		int _lognum;		//¿¿¿¿log¿¿
+		int _loglevel;		//logï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 		
+		int _lognum;		//ï¿½ï¿½ï¿½ï¿½logï¿½ï¿½
 		ofstream _logfile;
 		string _classname;
-		string _strlog;
+		string _strlog;	//æ¯æ¬¡logçš„å€¼
+		string _logdoc;	//logçš„å¸®åŠ©æ–‡æ¡£ï¼Œç”±help()è¿”å›
 	public:
 		logT();
 		~logT()
@@ -29,14 +31,18 @@ template < class T > class logT
 			_logfile.close();
 		};
 		void writeL(int logtype,const char *lformat,...);
-		void help();
+		inline string help() const;
+		inline string getdoc() const
+		{return _logdoc;}
+		//void SETDEFLEV(int loglev){ return DEFAULT_LEVEL = loglev; }
 	private:
-		string llev2str();
+		inline string llev2str();
 		// oftream help();
 };
 
-template < class T > logT < T >::logT():_loglevel(3)
+template < class T > logT < T >::logT():_loglevel(DEFAULT_LEVEL)
 {
+	_logdoc = help();
 	cout << "logT come on" << endl;
 	string log_filename;
 	log_filename = typeid(T).name();
@@ -49,7 +55,7 @@ template < class T > logT < T >::logT():_loglevel(3)
 	}
 	_classname = typeid(T).name();
 	_classname = _classname.substr(1);	//å»æ‰ç±»åé•¿åº¦
-};
+}
 
 template < class T > void logT < T >::writeL(int logtype,const char *lformat,...)
 {
@@ -77,7 +83,7 @@ template < class T > void logT < T >::writeL(int logtype,const char *lformat,...
 	}
 
 }
-template < class T > string logT<T>::llev2str()
+template < class T > inline string logT<T>::llev2str()
 {
 	string Sloglev;
 	switch (_lognum)
@@ -110,11 +116,26 @@ template < class T > string logT<T>::llev2str()
 	return Sloglev;
 }
 
-template < class T > void logT < T >::help()
+template < class T > inline string logT < T >::help() const
 {
-	string helpdoc;
-	helpdoc = "help of logT!";
-	cout << helpdoc << endl;
+	ostringstream helpdoc;
+helpdoc
+	<< "Welcome to use the log system!(2015.12 v0.2)\n"
+	<< "There are some methed(function) :\n"
+	<< " â— writeL(int logtype,const char* lfmt,...):\n"
+	<< "\t- logtype :The log'type that you want set\n"
+	<< "\t- lfmt : A list of argv, just like printf()\n"
+	<< " â— help() : You can get detail infomation of the log system\n"
+	<< " â— help(string funs)\n"
+	<< "\t- funs :The funtion(method) how to use of one that you want to know\n\n"
+	<< "There are some variable(parameter) :\n"
+	<< " - int _loglevel :\t The log lowest log level\n"
+	<< " - int _lognum :\t The log level you printf at one time you set\n"
+	<< " - ofstream _logfile :\t The logfile'path\n"
+	<< " - string _strlog :\t The log you printf at one time you set\n"
+	<< " - string _logdoc :\t The log system'help doc.\n"
+	<< endl;
+	return helpdoc.str();
 }
 
 static string getime()
@@ -133,7 +154,6 @@ static string lfmt(va_list st,const char *lformat,...)
 	va_end(st);
 	return strlog;
 }
-
 
 #endif
 // _LOG_T_H_ class logT header file
