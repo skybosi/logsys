@@ -1,1 +1,4 @@
-2015-12-02 15:21:22 Wed +0800 [ test ] [ LOG_DEBUG ]:  debug debug ...              format         6
+2015-12-03 09:38:21 Thu +0800	[ test ]	[  LOG_ERROR  ]: 	17	ERROR ERROR ...	              format         2
+2015-12-03 09:38:21 Thu +0800	[ test ]	[  LOG_ERROR  ]: 	21	ERROR ERROR ...	              format         2
+2015-12-03 09:38:21 Thu +0800	[ test ]	[ LOG_WARNING ]: 	23	WARNING WARNING ...	              format         3
+2015-12-03 09:38:21 Thu +0800	[ test ]	[   LOG_INFO  ]: 	29	INFO INFO ...	              format         5
