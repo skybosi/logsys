@@ -1,6 +1,6 @@
 #ifndef _MDEF_H_
 #define _MDEF_H_
-
+#include <string>
 #define	PRINTFLIKE(m,n)
 enum log_level
 {
@@ -14,9 +14,6 @@ enum log_level
 };
 
 #define BLK "\t"
-#define MAX_LINE_LOG 2048
-#define DEFAULT_LEVEL 5
-
 /* 
 bool logenv = true;
    #define DEBUG ((logenv)?(logenv=false,__LINE__<<3,LOG_DEBUG):
