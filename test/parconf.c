@@ -3,6 +3,9 @@
 #include <assert.h>
 #include <ctype.h>
 #define MAXSIZE 1024
+#define true 1
+#define false 0
+#define bool int
 int parse_conf(char *path);		// 解析配置文件
 bool isblank(char *str);		// 判断是否为空行
 int strpos(char *s, char *a);	// 返回子串在母串的下标
