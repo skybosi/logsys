@@ -10,6 +10,14 @@ class test:public logT < test >
 		cout << "test show";
 	}
 };
+class temp:public logT < temp >
+{
+  public:
+	void show()
+	{
+		cout << "temp show";
+	}
+};
 int main(int argc, char **argv)
 {
 	test a;
@@ -28,7 +36,23 @@ int main(int argc, char **argv)
 	
 	a.writeL(LINFO, "INFO INFO ...\t%20s %9d", "format", LOG_INFO);
 	// cout << a.help();
+	temp b;
+
+	b.writeL(LERROR, "ERROR ERROR ...\t%20s %9d", "format", LOG_ERROR);
+
+	b.writeL(LDEBUG, "debug debug ...\t%20s %9d", "format", LOG_DEBUG);
+	
+	b.writeL(LERROR, "ERROR ERROR ...\t%20s %9d", "format", LOG_ERROR);
+
+	b.writeL(LWARNING, "WARNING WARNING ...\t%20s %9d", "format", LOG_WARNING);
+	
+	b.writeL(LDEBUG, "debug debug ...\t%20s %9d", "format", LOG_DEBUG);
+	
+	b.writeL(LDEBUG, "debug debug ..\t%20s %9d", "format", LOG_DEBUG);
+	
+	b.writeL(LINFO, "INFO INFO ...\t%20s %9d", "format", LOG_INFO);
 	// cout << a.getdoc();
+	
 	cout << "Ok !" << endl;
 	return 0;
 }

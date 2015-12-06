@@ -10,10 +10,12 @@
 #include <sstream>
 #include <cstdlib>
 #include <cstring>
+#include <sys/stat.h>
 #include "Mdef.h"
 #include "parseconf.h"
 using namespace std;
-static string getime();
+static string getime(bool chose);
+// true :for the log ;false: for logfile'name
 template < class T > class logT
 {
   private:
@@ -24,10 +26,14 @@ template < class T > class logT
 	string _strlog;				// 每次log的值
 	string _logdoc;				// log的帮助文档，由help()返回
 	int _line;					// 当前log所在文件的行号
-	int _bufsize;
-	string _logpath;
+	int _bufsize;				// log line's size
+	string _logpath;			// the log's path (a directory)
+	string _logfname;			// log'sname
+	string _curlfname;			// current log's name with
+								// path
+	long getfsize(const char *ffilename);
 	string lfmt(va_list st, const char *lformat, ...);
-	int setlconf();	//set logsys's conf
+	int setlconf();				// set logsys's conf
   public:
 	logT();
 	~logT()
@@ -61,7 +67,19 @@ template < class T > int logT < T >::setlconf()
 	if (lastpos != "/")
 		_logpath.append("/");
 	flag |= 4;
+	_logfname = test2.LOGFNAME;
+	flag |= 8;
 	return flag;
+}
+
+template < class T > long logT < T >::getfsize(const char *ffilename)
+{
+	struct stat info;
+	memset(&info, 0, sizeof(info));
+	stat(ffilename, &info);
+	long fsize = info.st_size;
+	cout << "log file size: " << fsize << endl;
+	return fsize;
 }
 
 template < class T > logT < T >::logT()
@@ -69,10 +87,13 @@ template < class T > logT < T >::logT()
 	setlconf();
 	_logdoc = help();
 	cout << "logT come on" << endl;
-	string log_filename;
-	log_filename = typeid(T).name();
-	log_filename = _logpath + log_filename.substr(1) + ".log_1";
-	_logfile.open(log_filename.c_str(), ios::out | ios::app | ios::binary);
+	_curlfname = _logpath + _logfname + ".log";
+	if (getfsize(_curlfname.c_str()) > 4000)
+	{
+		string newfname = _logpath + _logfname + getime(false) + ".log";
+		rename(_curlfname.c_str(), newfname.c_str());
+	}
+	_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
 	if (!_logfile)
 	{
 		cerr << "open log file error!" << endl;
@@ -89,7 +110,7 @@ template < class T > void logT < T >::writeL(int loghere, const char *lformat, .
 	_line = loghere >> 3;		// get log line
 	if (_lognum <= _loglevel)
 	{
-		_logfile << getime() << BLK;
+		_logfile << getime(true) << BLK;
 		_logfile << "[ " << _classname << " ]" << BLK;
 		_logfile << llev2str() << BLK;
 		_logfile << _line << BLK;
@@ -162,12 +183,15 @@ template < class T > string logT < T >::help()
 		 return helpdoc.str();
 	 }
 
-	 static string getime()
+	 static string getime(bool chose)
 {
 	time_t now_time = time(NULL);;
 	char curtime[64];
 	memset(&curtime, 0, sizeof(curtime));
-	strftime(curtime, sizeof(curtime), "%Y-%m-%d %X %a %z", localtime(&now_time));
+	if (chose)
+		strftime(curtime, sizeof(curtime), "%Y-%m-%d %X %a %z", localtime(&now_time));
+	else
+		strftime(curtime, sizeof(curtime), "_%y%m%d%H%M%S", localtime(&now_time));
 	return curtime;
 }
 

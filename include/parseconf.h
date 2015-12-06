@@ -7,7 +7,13 @@
 #include <ctype.h>
 #include <cstdlib>
 using namespace std;
-
+typedef enum keytype
+{
+	STR = 0,
+	INT,
+	CHA,
+	FLT
+} ktype;
 typedef vector < std::string > strv;
 typedef map < std::string, std::string > strm;
 bool isblank(const char *str);	// 是否可见字符
@@ -19,7 +25,7 @@ class parseconf
 	ifstream _confile;			// configuration file's file stream 
 	strv _kwtab;				// key-value with vector
 	strm _kws;					// key-value with map
-
+//	inline set(string key, ktype type);
   public:
 	parseconf(string path);
 	parseconf()
@@ -38,7 +44,8 @@ class parseconf
 	int setconf();
 	int DEFAULT_LEVEL;
 	int MAX_LINE_LOG;
-	std::string LOGPATH;
+	string LOGPATH;
+	string LOGFNAME;
 };
 
 parseconf::parseconf(string path):_path(path)
@@ -75,7 +82,7 @@ int parseconf::setconf()
 	{
 		// int lev = pos->second;
 		DEFAULT_LEVEL = atoi((pos->second).c_str());
-		flag |= 1;;
+		flag |= 1;
 	}
 	pos = _kws.find("MAX_LINE_LOG");
 	if (pos != _kws.end())
@@ -89,8 +96,42 @@ int parseconf::setconf()
 		LOGPATH = (pos->second);
 		flag |= 4;
 	}
+	pos = _kws.find("LOGFNAME");
+	if (pos != _kws.end())
+	{
+		LOGFNAME = (pos->second);
+		flag |= 8;
+	}
 	return flag;
 }
+/*
+inline int parseconf::set(string key, ktype type)
+{
+	strm::iterator pos;
+	switch (type)
+	{
+	case INT:
+		 pos = _kws.find(#key);
+		if (pos != _kws.end())
+		{
+			// int lev = pos->second;
+			key = atoi((pos->second).c_str());
+		}
+		break;
+	case STR:
+			 pos = _kws.find(#key);
+		if (pos != _kws.end())
+		{
+			// int lev = pos->second;
+			key = (pos->second).c_str();
+		}
+		break;
+	default:
+		break;
+	}
+	return true;
+}
+*/
 
 // set key-value into strm(map) from strv(vector)
 strm parseconf::getkw()
