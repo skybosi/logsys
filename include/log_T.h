@@ -25,7 +25,9 @@ template < class T > class logT
 	string _logdoc;				// log的帮助文档，由help()返回
 	int _line;					// 当前log所在文件的行号
 	int _bufsize;
+	string _logpath;
 	string lfmt(va_list st, const char *lformat, ...);
+	int setlconf();	//set logsys's conf
   public:
 	logT();
 	~logT()
@@ -45,17 +47,31 @@ template < class T > class logT
 	// oftream help();
 };
 
-template < class T > logT < T >::logT()
+template < class T > int logT < T >::setlconf()
 {
+	int flag = 0;
 	parseconf test2("./etc/logsys.conf");
 	test2.parse_conf();
 	_loglevel = test2.DEFAULT_LEVEL;
+	flag |= 1;
 	_bufsize = test2.MAX_LINE_LOG;
+	flag |= 2;
+	_logpath = test2.LOGPATH;
+	string lastpos = _logpath.substr(_logpath.size() - 1);
+	if (lastpos != "/")
+		_logpath.append("/");
+	flag |= 4;
+	return flag;
+}
+
+template < class T > logT < T >::logT()
+{
+	setlconf();
 	_logdoc = help();
 	cout << "logT come on" << endl;
 	string log_filename;
 	log_filename = typeid(T).name();
-	log_filename = test2.LOGPATH + log_filename.substr(1) + ".log_1";
+	log_filename = _logpath + log_filename.substr(1) + ".log_1";
 	_logfile.open(log_filename.c_str(), ios::out | ios::app | ios::binary);
 	if (!_logfile)
 	{
@@ -163,5 +179,7 @@ template < class T > string logT < T >::lfmt(va_list st, const char *lformat,...
 	va_end(st);
 	return strlog;
 }
+
+
 #endif
 // _LOG_T_H_ class logT header file
