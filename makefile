@@ -1,9 +1,9 @@
 CC = g++
-CC_FLAG = -g -Wall -I
+CC_FLAG = -g -Wall -lpthread -I
 INCLUDE = include
 SRC = src/*.cpp
 TARGET = bin/logsys
-TEMPFILE = tmp/*
+TEMPFILE = log/*
 TESTFILE = source/test.txt
 OUTFILE = source/result.txt
 

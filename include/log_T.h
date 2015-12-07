@@ -13,49 +13,55 @@
 #include <sys/stat.h>
 #include "Mdef.h"
 #include "parseconf.h"
+#include "lmutex.h"
 using namespace std;
 static string getime(bool chose);
 // true :for the log ;false: for logfile'name
 template < class T > class logT
 {
-  private:
-	int _loglevel;				// log的最低级别 
-	int _lognum;				// 当前log的级别
-	ofstream _logfile;
-	string _classname;
-	string _strlog;				// 每次log的值
-	string _logdoc;				// log的帮助文档，由help()返回
-	int _line;					// 当前log所在文件的行号
-	int _bufsize;				// log line's size
-	string _logpath;			// the log's path (a directory)
-	string _logfname;			// log'sname
-	string _curlfname;			// current log's name with
-								// path
-	long getfsize(const char *ffilename);
-	string lfmt(va_list st, const char *lformat, ...);
-	int setlconf();				// set logsys's conf
-  public:
-	logT();
-	~logT()
-	{
-		cout << "logT will dead" << endl;
-		_logfile.close();
-	};
-	void writeL(int logtype, const char *lformat, ...);
-	string help() const;
-	string getdoc() const
-	{
-		return _logdoc;
-	}
-	// void SETDEFLEV(int loglev){ return DEFAULT_LEVEL = loglev; }
-  private:
-	  string llev2str();
-	// oftream help();
+	private:
+		int _loglevel;				// log的最低级别 
+		int _lognum;				// 当前log的级别
+		ofstream _logfile;
+		string _classname;
+		string _strlog;				// 每次log的值
+		string _logdoc;				// log的帮助文档，由help()返回
+		int _line;					// 当前log所在文件的行号
+		int _bufsize;				// log line's size
+		string _logpath;			// the log's path (a directory)
+		string _logfname;			// log's name
+		long _logfsize;				// log file's maxsize;
+		string _curlfname;			// current log's name with
+		// path
+		long getfsize(const char *ffilename);
+		string lfmt(va_list st, const char *lformat, ...);
+		long setlconf();				// set logsys's conf
+		lmutex* _logmutex;
+	public:
+		logT();
+		~logT()
+		{
+			cout << "logT will dead" << endl;
+	//		if(_logmutex)
+				delete _logmutex;
+			if(_logfile)
+				_logfile.close();
+		};
+		void writeL(int logtype, const char *lformat, ...);
+		string help() const;
+		string getdoc() const
+		{
+			return _logdoc;
+		}
+		// void SETDEFLEV(int loglev){ return DEFAULT_LEVEL = loglev; }
+	private:
+		string llev2str();
+		// oftream help();
 };
 
-template < class T > int logT < T >::setlconf()
+template < class T > long logT < T >::setlconf()
 {
-	int flag = 0;
+	long flag = 0;
 	parseconf test2("./etc/logsys.conf");
 	test2.parse_conf();
 	_loglevel = test2.DEFAULT_LEVEL;
@@ -69,6 +75,8 @@ template < class T > int logT < T >::setlconf()
 	flag |= 4;
 	_logfname = test2.LOGFNAME;
 	flag |= 8;
+	_logfsize = test2.LOGFSIZE;
+	flag |= 16;
 	return flag;
 }
 
@@ -84,11 +92,12 @@ template < class T > long logT < T >::getfsize(const char *ffilename)
 
 template < class T > logT < T >::logT()
 {
+	_logmutex = new lmutex(); 
 	setlconf();
 	_logdoc = help();
 	cout << "logT come on" << endl;
 	_curlfname = _logpath + _logfname + ".log";
-	if (getfsize(_curlfname.c_str()) > 4000)
+	if (getfsize(_curlfname.c_str()) > _logfsize)
 	{
 		string newfname = _logpath + _logfname + getime(false) + ".log";
 		rename(_curlfname.c_str(), newfname.c_str());
@@ -106,6 +115,7 @@ template < class T > logT < T >::logT()
 template < class T > void logT < T >::writeL(int loghere, const char *lformat, ...)
 {
 	// T clas;
+	//_logmutex->setlock();
 	_lognum = loghere & 7;		// get logtype
 	_line = loghere >> 3;		// get log line
 	if (_lognum <= _loglevel)
@@ -125,6 +135,7 @@ template < class T > void logT < T >::writeL(int loghere, const char *lformat, .
 		cout << _strlog << endl;
 		_logfile << _strlog << endl;
 	}
+	//_loglmutex->setunlock();
 
 }
 
@@ -133,57 +144,57 @@ template < class T > string logT < T >::llev2str()
 	string Sloglev;
 	switch (_lognum)
 	{
-	case 0:
-		Sloglev = "[   LOG_CORE  ]: ";
-		break;
-	case 1:
-		Sloglev = "[   LOG_BAD   ]: ";
-		break;
-	case 2:
-		Sloglev = "[  LOG_ERROR  ]: ";
-		break;
-	case 3:
-		Sloglev = "[ LOG_WARNING ]: ";
-		break;
-	case 4:
-		Sloglev = "[  LOG_NOTICE ]: ";
-		break;
-	case 5:
-		Sloglev = "[   LOG_INFO  ]: ";
-		break;
-	case 6:
-		Sloglev = "[  LOG_DEBUG  ]: ";
-		break;
-	default:
-		Sloglev = "[   Unkown    ]: ";
-		break;
+		case 0:
+			Sloglev = "[   LOG_CORE  ]: ";
+			break;
+		case 1:
+			Sloglev = "[   LOG_BAD   ]: ";
+			break;
+		case 2:
+			Sloglev = "[  LOG_ERROR  ]: ";
+			break;
+		case 3:
+			Sloglev = "[ LOG_WARNING ]: ";
+			break;
+		case 4:
+			Sloglev = "[  LOG_NOTICE ]: ";
+			break;
+		case 5:
+			Sloglev = "[   LOG_INFO  ]: ";
+			break;
+		case 6:
+			Sloglev = "[  LOG_DEBUG  ]: ";
+			break;
+		default:
+			Sloglev = "[   Unkown    ]: ";
+			break;
 	}
 	return Sloglev;
 }
 
 template < class T > string logT < T >::help()
-	 const
-	 {
-		 ostringstream helpdoc;
-		 helpdoc
-			 << "Welcome to use the log system!(2015.12 v0.2)\n"
-			 << "There are some methed(function) :\n"
-			 << " ● writeL(int logtype,const char* lfmt,...):\n"
-			 << "\t- logtype :The log'type that you want set\n"
-			 << "\t- lfmt : A list of argv, just like printf()\n"
-			 << " ● help() : You can get detail infomation of the log system\n"
-			 << " ● help(string funs)\n"
-			 << "\t- funs :The funtion(method) how to use of one that you want to know\n"
-			 << "There are some variable(parameter) :\n"
-			 << " - int _loglevel :\t The log lowest log level\n"
-			 << " - int _lognum :\t The log level you printf at one time you set\n"
-			 << " - ofstream _logfile :\t The logfile'path\n"
-			 << " - string _strlog :\t The log you printf at one time you set\n"
-			 << " - string _logdoc :\t The log system'help doc.\n" << endl;
-		 return helpdoc.str();
-	 }
+	const
+{
+	ostringstream helpdoc;
+	helpdoc
+		<< "Welcome to use the log system!(2015.12 v0.2)\n"
+		<< "There are some methed(function) :\n"
+		<< " ● writeL(int logtype,const char* lfmt,...):\n"
+		<< "\t- logtype :The log'type that you want set\n"
+		<< "\t- lfmt : A list of argv, just like printf()\n"
+		<< " ● help() : You can get detail infomation of the log system\n"
+		<< " ● help(string funs)\n"
+		<< "\t- funs :The funtion(method) how to use of one that you want to know\n"
+		<< "There are some variable(parameter) :\n"
+		<< " - int _loglevel :\t The log lowest log level\n"
+		<< " - int _lognum :\t The log level you printf at one time you set\n"
+		<< " - ofstream _logfile :\t The logfile'path\n"
+		<< " - string _strlog :\t The log you printf at one time you set\n"
+		<< " - string _logdoc :\t The log system'help doc.\n" << endl;
+	return helpdoc.str();
+}
 
-	 static string getime(bool chose)
+static string getime(bool chose)
 {
 	time_t now_time = time(NULL);;
 	char curtime[64];
@@ -203,7 +214,6 @@ template < class T > string logT < T >::lfmt(va_list st, const char *lformat,...
 	va_end(st);
 	return strlog;
 }
-
 
 #endif
 // _LOG_T_H_ class logT header file

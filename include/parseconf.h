@@ -1,3 +1,5 @@
+#ifndef _PARSECONF_H_
+#define _PARSECONF_H_
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -6,46 +8,43 @@
 #include <map>
 #include <ctype.h>
 #include <cstdlib>
+#include <typeinfo>
+#include "Mdef.h"
 using namespace std;
-typedef enum keytype
-{
-	STR = 0,
-	INT,
-	CHA,
-	FLT
-} ktype;
-typedef vector < std::string > strv;
-typedef map < std::string, std::string > strm;
 bool isblank(const char *str);	// 是否可见字符
 string & trim(string & s);
 class parseconf
 {
-  private:
-	string _path;				// configuration file's path
-	ifstream _confile;			// configuration file's file stream 
-	strv _kwtab;				// key-value with vector
-	strm _kws;					// key-value with map
-//	inline set(string key, ktype type);
-  public:
-	parseconf(string path);
-	parseconf()
-	{
-	}
-	~parseconf()
-	{
-		cout << "confile will close..." << endl;
-		_confile.close();
-	}
-	string del_coment(string soustr, string head, string tail = "", bool way = 1);
-	bool getfkwtab();
-	string getkwtab();
-	strm getkw();
-	bool parse_conf();
-	int setconf();
-	int DEFAULT_LEVEL;
-	int MAX_LINE_LOG;
-	string LOGPATH;
-	string LOGFNAME;
+	private:
+		string _path;				// configuration file's path
+		ifstream _confile;			// configuration file's file stream 
+		strv _kwtab;				// key-value with vector
+		strm _kws;					// key-value with map
+		bool set(INT& key,string keyname);
+		bool set(LONG& key,string keyname);
+		bool set(DOBL& key,string keyname);
+		bool set(string& key,string keyname);
+	public:
+		parseconf(string path);
+		parseconf()
+		{
+		}
+		~parseconf()
+		{
+			cout << "confile will close..." << endl;
+			_confile.close();
+		}
+		string del_coment(string soustr, string head, string tail = "", bool way = 1);
+		bool getfkwtab();
+		string getkwtab();
+		strm getkw();
+		bool parse_conf();
+		int setconf();
+		INT DEFAULT_LEVEL;
+		INT MAX_LINE_LOG;
+		LONG LOGFSIZE;
+		string LOGPATH;
+		string LOGFNAME;
 };
 
 parseconf::parseconf(string path):_path(path)
@@ -74,64 +73,74 @@ bool parseconf::parse_conf()
 
 int parseconf::setconf()
 {
-
 	int flag = 0;
-	strm::iterator pos;
-	pos = _kws.find("DEFAULT_LEVEL");
-	if (pos != _kws.end())
-	{
-		// int lev = pos->second;
-		DEFAULT_LEVEL = atoi((pos->second).c_str());
+	if(set(DEFAULT_LEVEL,STR(DEFAULT_LEVEL)))
 		flag |= 1;
-	}
-	pos = _kws.find("MAX_LINE_LOG");
-	if (pos != _kws.end())
-	{
-		MAX_LINE_LOG = atoi((pos->second).c_str());
+	if(set(MAX_LINE_LOG,STR(MAX_LINE_LOG)))
 		flag |= 2;
-	}
-	pos = _kws.find("LOGPATH");
-	if (pos != _kws.end())
-	{
-		LOGPATH = (pos->second);
+	if(set(LOGPATH,STR(LOGPATH)))
 		flag |= 4;
-	}
-	pos = _kws.find("LOGFNAME");
-	if (pos != _kws.end())
-	{
-		LOGFNAME = (pos->second);
+	if(set(LOGFNAME,STR(LOGFNAME)))
 		flag |= 8;
-	}
+	if(set(LOGFSIZE,STR(LOGFSIZE)))
+		flag |= 16;
+/*	
+ 	cout << "DEFAULT_LEVEL:" << DEFAULT_LEVEL << endl;
+	cout << "MAX_LINE_LOG :" << MAX_LINE_LOG << endl;
+	cout << "LOGPATH      :" << LOGPATH << endl;
+	cout << "LOGFNAME     :" << LOGFNAME << endl;
+	cout << "LOGFSIZE     :" << LOGFSIZE << endl;
+*/
 	return flag;
 }
-/*
-inline int parseconf::set(string key, ktype type)
+bool parseconf::set(int& key,string keyname)
 {
 	strm::iterator pos;
-	switch (type)
+	pos = _kws.find(keyname);
+	if (pos != _kws.end())
 	{
-	case INT:
-		 pos = _kws.find(#key);
-		if (pos != _kws.end())
-		{
-			// int lev = pos->second;
-			key = atoi((pos->second).c_str());
-		}
-		break;
-	case STR:
-			 pos = _kws.find(#key);
-		if (pos != _kws.end())
-		{
-			// int lev = pos->second;
-			key = (pos->second).c_str();
-		}
-		break;
-	default:
-		break;
+		key = atol((pos->second).c_str());
+		return true;
 	}
-	return true;
+	else
+		return false;
 }
-*/
+bool parseconf::set(long& key,string keyname)
+{
+	strm::iterator pos;
+	pos = _kws.find(keyname);
+	if (pos != _kws.end())
+	{
+		key = atol((pos->second).c_str());
+		return true;
+	}
+	else
+		return false;
+}
+bool parseconf::set(double& key,string keyname)
+{
+	strm::iterator pos;
+	pos = _kws.find(keyname);
+	if (pos != _kws.end())
+	{
+		key = atof((pos->second).c_str());
+		return true;
+	}
+	else
+		return false;
+}
+bool parseconf::set(string& key,string keyname)
+{
+	strm::iterator pos;
+	pos = _kws.find(keyname);
+	if (pos != _kws.end())
+	{
+		key = (pos->second).c_str();
+		return true;
+	}
+	else
+		return false;
+}
 
 // set key-value into strm(map) from strv(vector)
 strm parseconf::getkw()
@@ -149,8 +158,8 @@ strm parseconf::getkw()
 		if (!isblank(key.c_str()))
 		{
 			kw.insert(pair < string, string > (trim(key), trim(value)));
-			cout << "key  :" << key << "\t\t";
-			cout << "value:" << value << endl;
+			//			cout << "key  :" << key << "\t\t";
+			//			cout << "value:" << value << endl;
 		}
 	}
 	_kws = kw;
@@ -241,7 +250,14 @@ string & trim(string & s)
 	s.erase(++c, s.end());
 	return s;
 }
+/*
+   int main() 
+   {
+   parseconf test2("./etc/logsys.conf"); 
+   test2.parse_conf();
+   return 0; 
+   } 
+   */
 
-/* 
-   int main() { parseconf test2("../etc/logsys.conf"); test2.parse_conf();
-   return 0; } */
+#endif
+//parseconf.h _PARSECONF_H_
