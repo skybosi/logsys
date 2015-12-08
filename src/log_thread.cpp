@@ -29,23 +29,24 @@ int main(int argc,char** argv)
 	{
 		if(pthread_create(&pth[nums++],&attr,plog,(void*)&a)!=0)		//创建一个线程
 		{
-			perror("ptread_create error");
+			perror("pthread_create error");
 			exit(1);
 		}
 	}
-	while(1)
+	int i = 10000;
+	while(i--)
 	{
-		a.writeL(LERROR, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"); 
+		a.writeL(LERROR, "bbbbbbbbbbbbbbbbbb"); 
 	}
 	return 0;
 }
 void *plog(void *arg)
 {
 	test* a = (test*)arg;
-	while(1)
+	int i = 10000;
+	while(i--)
 	{
-		sleep(1);
-		a->writeL(LERROR,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		a->writeL(LERROR,"aaaaaaaaa");
 	}
 	return (void*)0;
 }

@@ -58,7 +58,6 @@ template < class T > class logT
 		string llev2str();
 		// oftream help();
 };
-
 template < class T > long logT < T >::setlconf()
 {
 	long flag = 0;
@@ -115,7 +114,7 @@ template < class T > logT < T >::logT()
 template < class T > void logT < T >::writeL(int loghere, const char *lformat, ...)
 {
 	// T clas;
-	//_logmutex->setlock();
+	_logmutex->setlock();
 	_lognum = loghere & 7;		// get logtype
 	_line = loghere >> 3;		// get log line
 	if (_lognum <= _loglevel)
@@ -135,7 +134,7 @@ template < class T > void logT < T >::writeL(int loghere, const char *lformat, .
 		cout << _strlog << endl;
 		_logfile << _strlog << endl;
 	}
-	//_loglmutex->setunlock();
+	_logmutex->setunlock();
 
 }
 

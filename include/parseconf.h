@@ -28,6 +28,7 @@ class parseconf
 		parseconf(string path);
 		parseconf()
 		{
+			_path = "../etc/logsys.conf";
 		}
 		~parseconf()
 		{
@@ -93,6 +94,7 @@ int parseconf::setconf()
 */
 	return flag;
 }
+//a series of set function for set the configuration
 bool parseconf::set(int& key,string keyname)
 {
 	strm::iterator pos;
@@ -257,7 +259,6 @@ string & trim(string & s)
    test2.parse_conf();
    return 0; 
    } 
-   */
-
+*/
 #endif
 //parseconf.h _PARSECONF_H_

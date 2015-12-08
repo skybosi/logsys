@@ -13,7 +13,7 @@ $(TARGET):$(SRC)
 clean:				
 	rm $(TARGET) $(TEMPFILE)
 test:
-	@./$(TARGET) $(TESTFILE) $(OUTFILE)
+	@./$(TARGET) 2
 debug:
 	@$(DEBUG) ./$(TARGET) $(TESTFILE) $(OUTFILE)
 
