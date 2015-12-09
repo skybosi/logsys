@@ -25,7 +25,7 @@ class lmutex
 		lmutex();
 		~lmutex()
 		{
-			cout << "delete the lock" << endl;
+			//cout << "delete the lock" << endl;
 		//	if(mutex != NULL && mutexattr != NULL)
 			{
 			    pthread_mutexattr_destroy(&mutexattr);
@@ -47,7 +47,7 @@ lmutex::lmutex()
 
 void lmutex::setlock(lockway chose)
 {
-	cout << "lmutex is locking ..." << endl;
+	//cout << "lmutex is locking ..." << endl;
 	switch (chose)
 	{
 		case ATOMIC:
@@ -67,7 +67,7 @@ void lmutex::setlock(lockway chose)
 
 void lmutex::setunlock(lockway chose)
 {
-	cout << "lmutex is will unlock ..." << endl;
+	//cout << "lmutex is will unlock ..." << endl;
 	switch (chose)
 	{
 		case ATOMIC:

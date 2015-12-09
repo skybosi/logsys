@@ -20,6 +20,8 @@ class temp:public logT < temp >
 };
 int main(int argc, char **argv)
 {
+	while(1)
+	{
 	test a;
 
 	a.writeL(LERROR, "ERROR ERROR ...\t%20s %9d", "format", LOG_ERROR);
@@ -54,6 +56,7 @@ int main(int argc, char **argv)
 	b.writeL(LDEBUG, "debug debug ..\t%20s %9d", "format", LOG_DEBUG);
 	
 	b.writeL(LINFO, "INFO INFO ...\t%20s %9d", "format", LOG_INFO);
+	}
 	// cout << a.getdoc();
 /*
 	wlog(test,LERROR, "ERROR ERROR ...\t%20s %9d", "format", LOG_ERROR);

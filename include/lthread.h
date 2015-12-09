@@ -1,6 +1,7 @@
 #ifndef _LTHREAD_H_
 #define _LTHREAD_H_
 #include "Basethread.h"
+#include "lmutex.h"
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
@@ -13,78 +14,94 @@
 
 using namespace std;
 void getlflist(const char *dir, vector < string > &files);
-static string getime(bool chose);
+static string getime();
 int checkfname(string logfpath);
 class lthread:public Basethread
 {
-  private:
-	string _logpath;
-	long _maxfsize;
-  public:
-	  lthread(string logpath, long maxfsize);
-	 ~lthread()
-	{
-		// cout << "log thread will deading " << endl;
-	}
-	int run();
-	long checkfsize();
-	bool checklogfnum(string logpath);
-
+	private:
+		string _flogpath;		//full of the file's path with name
+		long _maxfsize;			//max of the each log file's size
+		lmutex* _logfmutex;
+	public:
+		lthread(string logpath, long maxfsize);
+		~lthread()
+		{
+		//	cout << "log thread will deading " << endl;
+			delete _logfmutex;
+		}
+		int run();
+		long getfsize();		
+		bool checkffull();
+		bool checklogfnum(string logpath);
 };
 
-lthread::lthread(string logpath, long maxfsize):Basethread(1), _logpath(logpath),
-_maxfsize(maxfsize)
+lthread::lthread(string logpath, long maxfsize):Basethread(1), _flogpath(logpath),
+	_maxfsize(maxfsize)
 {
 	// cout << "log thread is coming..." << endl;
+	 _logfmutex = new lmutex();
 }
 
 int lthread::run()
 {
-	long fsize = checkfsize();
-	int len = _logpath.size();
-	cout << "old parh:" << _logpath << endl;
-	string oldpath = _logpath;
-	if (fsize > _maxfsize)
-	{
-		cout << "我来了" << endl;
-		string newfname = oldpath.erase(len - 4) + getime(false) + ".log";
-		cout << "new path:" << newfname << endl;
-		rename(_logpath.c_str(), newfname.c_str());
-		cout << "rename ok!" << endl;
-		ofstream newlfile;
-		newlfile.open(_logpath.c_str());
-		if (!newlfile)
-		{
-			cerr << "open log file error!" << endl;
-			exit(1);
-		}
-		newlfile.close();
-	}
-	else
-	{
-		ofstream newlfile;
-		newlfile.open(_logpath.c_str());
-		if (!newlfile)
-		{
-			cerr << "open log file error!" << endl;
-			exit(1);
-		}
-		newlfile.close();
-	}
-	// checklogfnum(_logpath);
+	_logfmutex->setlock();
+	checkffull();
+
+	// checklogfnum(_flogpath);
+	 _logfmutex->setunlock();
 	return 0;
 }
 
 
-	// check the log file's size
-long lthread::checkfsize()
+// check the log file's size
+bool lthread::checkffull()
 {
-	const char *filename = _logpath.c_str();
+	long fsize = getfsize();
+	int len = _flogpath.size();
+	cout << "old parh:" << _flogpath << endl;
+	string oldpath = _flogpath;
+	if (fsize > _maxfsize)
+	{
+		cout << "我来了" << endl;
+		string newfname = oldpath.erase(len - 4) + getime() + ".log";
+		cout << "new path:" << newfname << endl;
+		rename(_flogpath.c_str(), newfname.c_str());
+		cout << "rename ok!" << endl;
+		ofstream newlfile;
+		newlfile.open(_flogpath.c_str());
+		if (!newlfile)
+		{
+			cerr << "open log file error!" << endl;
+			exit(1);
+		}
+		newlfile.close();
+		return true;
+	}
+	else
+	{
+		cout << "log file is not full! come on baby!" << endl;
+	/*
+		ofstream newlfile;
+		newlfile.open(_flogpath.c_str());
+		if (!newlfile)
+		{
+			cerr << "open log file error!" << endl;
+			exit(1);
+		}
+		newlfile.close();
+		*/
+		return false;
+	}
+}
+//get the size of log file
+long lthread::getfsize()
+{
+	const char *filename = _flogpath.c_str();
 	struct stat finfo;
 	memset(&finfo, 0, sizeof(finfo));
 	stat(filename, &finfo);
 	long fsize = finfo.st_size;
-	cout << " file size: " << fsize << endl;
+	cout << "log file size: " << fsize << endl;
 	return fsize;
 }
 
@@ -96,7 +113,7 @@ bool lthread::checklogfnum(string logpath)
 		return false;
 	return true;
 }
-
+//get the log file's list at the directory 
 void getlflist(const char *dir, vector < string > &files)
 {
 	DIR *dp;
@@ -156,15 +173,12 @@ int checkfname(string logfpath)
 	return logfnum;
 }
 
-static string getime(bool chose)
+static string getime()
 {
 	time_t now_time = time(NULL);;
 	char curtime[64];
 	memset(&curtime, 0, sizeof(curtime));
-	if (chose)
-		strftime(curtime, sizeof(curtime), "%Y-%m-%d %X %a %z", localtime(&now_time));
-	else
-		strftime(curtime, sizeof(curtime), "_%y%m%d%H%M%S", localtime(&now_time));
+	strftime(curtime, sizeof(curtime), "_%y%m%d%H%M%S", localtime(&now_time));
 	return curtime;
 }
 

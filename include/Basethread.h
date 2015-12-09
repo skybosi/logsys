@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <iostream>
 #include <stdlib.h>
+#include <cstdio>
 #define MAXTHREAD 10
 using namespace std;
 class Basethread
@@ -21,7 +22,7 @@ class Basethread
 	}
 	 ~Basethread()
 	{
-	    //cout << "thread will dead!" << endl;
+	  //cout << "Basethread will dead!" << endl;
 		pthread_attr_destroy(&attr);
 	}
 	bool create();
@@ -35,11 +36,13 @@ Basethread::Basethread(int threadnum):_threadnum(threadnum)
 		perror("pthread_create is heavy");
 		exit(1);
 	}
-	//cout << "thread is coming" << endl;
+	//cout << "Basethread is coming" << endl;
 	_curthreadnum = 0;
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);	// 线程分离属性
-	create();
+	if(!create())
+		exit(1);
+		
 }
 
 bool Basethread::create()
@@ -49,9 +52,10 @@ bool Basethread::create()
 		if (pthread_create(&pth[_curthreadnum++], &attr, runhere, (void *)(this)) != 0)	// 创建一个线程
 		{
 			perror("pthread_create error");
-			exit(1);
+			return false;
 		}
 	}
+	return true;
 }
 
 inline void *Basethread::runhere(void *args)

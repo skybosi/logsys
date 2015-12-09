@@ -68,6 +68,6 @@ int checkfname(string logfpath)
 
 int main()
 {
-	checkfname("./log/first.log");	
+	checkfname("../log/first.log");	
 	return 0;
 }

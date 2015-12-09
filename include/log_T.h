@@ -14,6 +14,7 @@
 #include "Mdef.h"
 #include "parseconf.h"
 #include "lmutex.h"
+#include "lthread.h"
 using namespace std;
 static string getime(bool chose);
 // true :for the log ;false: for logfile'name
@@ -37,6 +38,7 @@ template < class T > class logT
 		string lfmt(va_list st, const char *lformat, ...);
 		long setlconf();				// set logsys's conf
 		lmutex* _logmutex;
+		lthread* _checklthread;
 	public:
 		logT();
 		~logT()
@@ -96,11 +98,14 @@ template < class T > logT < T >::logT()
 	_logdoc = help();
 	cout << "logT come on" << endl;
 	_curlfname = _logpath + _logfname + ".log";
-	if (getfsize(_curlfname.c_str()) > _logfsize)
+	cout << "_curlfname:" << _curlfname << endl;
+	_checklthread = new lthread(_curlfname,_logfsize);
+	_checklthread->run();
+	/*if (getfsize(_curlfname.c_str()) > _logfsize)
 	{
 		string newfname = _logpath + _logfname + getime(false) + ".log";
 		rename(_curlfname.c_str(), newfname.c_str());
-	}
+	}*/
 	_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
 	if (!_logfile)
 	{
@@ -123,7 +128,7 @@ template < class T > void logT < T >::writeL(int loghere, const char *lformat, .
 		_logfile << "[ " << _classname << " ]" << BLK;
 		_logfile << llev2str() << BLK;
 		_logfile << _line << BLK;
-		cout << "line:" << _line << BLK;
+		//cout << "line:" << _line << BLK;
 		/* 
 		   char strlog[2048]; memset(&strlog, 0, sizeof(strlog)); va_list st;
 		   va_start(st, lformat); vsprintf(strlog, lformat, st); va_end(st);
@@ -131,7 +136,7 @@ template < class T > void logT < T >::writeL(int loghere, const char *lformat, .
 		va_list st;
 		va_start(st, lformat);
 		_strlog = lfmt(st, lformat);
-		cout << _strlog << endl;
+	//	cout << _strlog << endl;
 		_logfile << _strlog << endl;
 	}
 	_logmutex->setunlock();

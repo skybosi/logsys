@@ -1,9 +1,9 @@
-#include "lthread.h"
+#include "../include/lthread.h"
 #include <string>
 using namespace std;
 int main(int argc, char **argv)
 {
-	lthread test("../log/log/first.log",4000);
+	lthread test("../log/first.log",4000);
 	int i = 10;
 	while (i--)
 	{
