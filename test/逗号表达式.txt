@@ -1,0 +1,20 @@
+#include<stdio.h>
+static int i = 0;
+#define DEBUG 5
+#define def2 ((i != 0)?(i--,__LINE__,DEBUG): (i++,DEBUG,__LINE__))
+int main()
+{
+	int j = def2;
+	printf("%d\n", j);
+	int k = def2;
+	printf("%d\n", k);
+	int b = def2;
+	printf("%d\n", b);
+	int c = def2;
+	printf("%d\n", c);
+	int e = def2;
+	printf("%d\n", e);
+	int f = def2;
+	printf("%d\n", f);
+	return 0;
+}

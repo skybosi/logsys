@@ -1,7 +1,8 @@
 #ifndef _MDEF_H_
 #define _MDEF_H_
-
-#define	PRINTFLIKE(m,n)	
+#include <vector>
+#include <string>
+#include <map>
 enum log_level
 {
 	LOG_CORE = 0,
@@ -12,7 +13,37 @@ enum log_level
 	LOG_INFO,
 	LOG_DEBUG
 };
-#define BLK " "
-#define MAX_LINE_LOG 2048
+#define BLK "\t"
+#define STR(T) #T
+//write log's macro
+#define wlog(clas,lev,lformat,...)			{ clas temp; temp.writeL((lev),lformat, ##__VA_ARGS__);} 
+#define wlog2(clas,lev,lformat,args...)		{ clas temp; temp.writeL((lev),lformat, ##args);} 
+typedef std::vector<std::string> strv;
+typedef std::map <std::string, std::string> strm;
+#define INT int
+#define LONG long
+#define DOBL double
+
+/* 
+bool logenv = true;
+   #define DEBUG ((logenv)?(logenv=false,(__LINE__)<<3,LOG_DEBUG):
+   (logenv=true,LOG_DEBUG,(__LINE__))) #define INFO
+   ((logenv)?(logenv=false,(__LINE__),LOG_INFO):
+   (logenv=true,LOG_INFO,(__LINE__))) #define NOTICE
+   ((logenv)?(logenv=false,(__LINE__),LOG_NOTICE): (LOG_NOTICE,(__LINE__)))
+   #define WARNING ((logenv)?(logenv=false,(__LINE__),LOG_WARNING):
+   (LOG_WARNING,(__LINE__))) #define ERROR
+   ((logenv)?(logenv=false,(__LINE__),LOG_ERROR):
+   (logenv=true,LOG_ERROR,(__LINE__))) #define BAD
+   ((logenv)?(logenv=false,(__LINE__),LOG_BAD): (LOG_BAD,(__LINE__))) #define CORE 
+   ((logenv)?(logenv=false,(__LINE__),LOG_CORE): (LOG_CORE,(__LINE__))) 
+*/
+#define LDEBUG		( (__LINE__) << 3 | ( LOG_DEBUG ) )
+#define LINFO		( (__LINE__) << 3 | ( LOG_INFO ) )
+#define LNOTICE		( (__LINE__) << 3 | ( LOG_NOTICE ) )
+#define LWARNING	( (__LINE__) << 3 | ( LOG_WARNING ) )
+#define LERROR		( (__LINE__) << 3 | ( LOG_ERROR ) )
+#define LBAD		( (__LINE__) << 3 | ( LOG_BAD ) )
+#define LCORE		( (__LINE__) << 3 | ( LOG_CORE ) )
 
 #endif // _MDEF_H_ mdef.h header file
