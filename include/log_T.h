@@ -40,7 +40,7 @@ template < class T > logT < T >::logT():_loglevel(3)
 	cout << "logT come on" << endl;
 	string log_filename;
 	log_filename = typeid(T).name();
-	log_filename = "./tmp/" + log_filename.substr(1)+".log_1";
+	log_filename = "../log/" + log_filename.substr(1)+".log_1";
 	_logfile.open(log_filename.c_str(), ios::out | ios::app | ios::binary);
 	if (!_logfile)
 	{

@@ -11,7 +11,12 @@ class test
 				delete tmp;
 		}
 		string log(int logtype, const char* lformat,...);
-	private:
+		void show()
+		{
+			cout << "hahahah:" << endl;
+			log(LOG_DEBUG,"debug debug ...%20s %9d","format",LOG_DEBUG);
+		}
+	public:
 		logT<test>* tmp;
 };
 test::test()
@@ -28,7 +33,8 @@ string test::log(int logtype, const char* lformat,...)
 int main(int argc,char** argv)
 {
 	test a;
-	a.log(LOG_DEBUG,"debug debug ...%20s %9d","format",LOG_DEBUG);
+	//a.log(LOG_DEBUG,"debug debug ...%20s %9d","format",LOG_DEBUG);
+	a.show();
 	cout << "Ok !" << endl;
 	return 0;
 }
