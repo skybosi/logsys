@@ -1,6 +1,5 @@
 # logsys
 A log system
-<<<<<<< HEAD
 The template class'instance as a member variables of another class
 inherited template class logT(base class)
 **The problem about the log:**
