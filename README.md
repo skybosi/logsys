@@ -1,7 +1,6 @@
 # logsys
 A log system
-The template class'instance as a member variables of another class
-inherited class logT(base class)
+The logT class'instance as a member variables of another class
 **The problem about the log:**
 ##log system
 Log file is a text document that recording the log you want print everytime or everywhere; so you can know the program how to work or while the program core down or other problem, you find the position easy!
