@@ -16,13 +16,14 @@ enum log_level
 #define BLK "\t"
 #define STR(T) #T
 //write log's macro
-#define wlog(clas,lev,lformat,...)			{ clas temp; temp.writeL((lev),lformat, ##__VA_ARGS__);} 
+#define wlog(lev,clas,lformat,...)			{ log->writeL((lev),#clas,lformat, ##__VA_ARGS__);} 
 #define wlog2(clas,lev,lformat,args...)		{ clas temp; temp.writeL((lev),lformat, ##args);} 
 typedef std::vector<std::string> strv;
 typedef std::map <std::string, std::string> strm;
 #define INT int
 #define LONG long
 #define DOBL double
+#define CLOGFMT(_C, _X) #_C "\t[T%08X] " _X, (uint32)(100)
 
 /* 
 bool logenv = true;
@@ -39,11 +40,11 @@ bool logenv = true;
    ((logenv)?(logenv=false,(__LINE__),LOG_CORE): (LOG_CORE,(__LINE__))) 
 */
 #define LDEBUG		( (__LINE__) << 3 | ( LOG_DEBUG ) )
-#define LINFO		( (__LINE__) << 3 | ( LOG_INFO ) )
+#define LINFO			( (__LINE__) << 3 | ( LOG_INFO ) )
 #define LNOTICE		( (__LINE__) << 3 | ( LOG_NOTICE ) )
 #define LWARNING	( (__LINE__) << 3 | ( LOG_WARNING ) )
 #define LERROR		( (__LINE__) << 3 | ( LOG_ERROR ) )
-#define LBAD		( (__LINE__) << 3 | ( LOG_BAD ) )
-#define LCORE		( (__LINE__) << 3 | ( LOG_CORE ) )
+#define LBAD			( (__LINE__) << 3 | ( LOG_BAD ) )
+#define LCORE			( (__LINE__) << 3 | ( LOG_CORE ) )
 
 #endif // _MDEF_H_ mdef.h header file

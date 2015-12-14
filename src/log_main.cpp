@@ -7,33 +7,27 @@ class test
 		test();
 		~test()
 		{
-			if(tmp)
-				delete tmp;
+			if(log)
+				delete log;
 		}
-		string log(int logtype, const char* lformat,...);
 		void show()
 		{
 			cout << "hahahah:" << endl;
-			log(LOG_DEBUG,"debug debug ...%20s %9d","format",LOG_DEBUG);
+			//tmp->writeL(LDEBUG,"debug debug ...%20s %9d","format",LOG_DEBUG);
+			wlog(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
 		}
 	public:
-		logT<test>* tmp;
+		logT* log;
 };
 test::test()
 {
-	tmp = new logT<test>;
-}
-string test::log(int logtype, const char* lformat,...)
-{
-	va_list st;
-	va_start(st, lformat);
-	tmp->writeL(logtype,st,lformat);
-	return "OK";
+	log = new logT();
 }
 int main(int argc,char** argv)
 {
 	test a;
-	//a.log(LOG_DEBUG,"debug debug ...%20s %9d","format",LOG_DEBUG);
+//	a.tmp->writeL(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
+//	while(1)
 	a.show();
 	cout << "Ok !" << endl;
 	return 0;

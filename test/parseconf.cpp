@@ -16,35 +16,34 @@ bool isblank(const char *str);	// 是否可见字符
 string & trim(string & s);
 class parseconf
 {
-	friend class logT;
-	private:
-		string _path;				// configuration file's path
-		ifstream _confile;			// configuration file's file stream
-		strm _kws;					// key-value with map
-		logconf _lconf;
-		bool set(INT & key, string keyname);
-		bool set(LONG & key, string keyname);
-		bool set(DOBL & key, string keyname);
-		bool set(string & key, string keyname);
-	public:
-		parseconf(string path);
-		parseconf()
-		{
-			_path = "../etc/logsys.conf";
-		}
-		~parseconf()
-		{
-	//cout << "confile will close..." << endl;
-			_confile.close();
-		}
-		bool getfkwtab();
-		bool parse_conf();
-		void setconf();
+  private:
+	string _path;				// configuration file's path
+	ifstream _confile;			// configuration file's file stream
+	strm _kws;					// key-value with map
+	logconf _lconf;
+	bool set(INT & key, string keyname);
+	bool set(LONG & key, string keyname);
+	bool set(DOBL & key, string keyname);
+	bool set(string & key, string keyname);
+  public:
+	  parseconf(string path);
+	  parseconf()
+	{
+		_path = "../etc/logsys.conf";
+	}
+	 ~parseconf()
+	{
+		cout << "confile will close..." << endl;
+		_confile.close();
+	}
+	bool getfkwtab();
+	bool parse_conf();
+	int setconf();
 };
 
 parseconf::parseconf(string path):_path(path)
 {
-	//cout << "confile will open..." << endl;
+	cout << "confile will open..." << endl;
 	_confile.open(_path.c_str());
 	if (!_confile)
 	{
@@ -57,18 +56,26 @@ bool parseconf::parse_conf()
 {
 	if (!(this->getfkwtab()))
 		return false;
-	setconf();
+	if (this->setconf() <= 0)
+		return false;
 	return true;
 }
 
-void parseconf::setconf()
+int parseconf::setconf()
 {
-	set(_lconf.DEFAULT_LEVEL, STR(DEFAULT_LEVEL));
-	set(_lconf.MAX_LINE_LOG, STR(MAX_LINE_LOG));
-	set(_lconf.LOGPATH, STR(LOGPATH));
-	set(_lconf.LOGFNAME, STR(LOGFNAME));
-	set(_lconf.LOGFSIZE, STR(LOGFSIZE));
-//	cout << _lconf;
+	int flag = 0;
+	if (set(_lconf.DEFAULT_LEVEL, STR(DEFAULT_LEVEL)))
+		flag |= 1;
+	if (set(_lconf.MAX_LINE_LOG, STR(MAX_LINE_LOG)))
+		flag |= 2;
+	if (set(_lconf.LOGPATH, STR(LOGPATH)))
+		flag |= 4;
+	if (set(_lconf.LOGFNAME, STR(LOGFNAME)))
+		flag |= 8;
+	if (set(_lconf.LOGFSIZE, STR(LOGFSIZE)))
+		flag |= 16;
+	cout << _lconf << endl;
+	return flag;
 }
 
 // a series of set function for set the configuration 
@@ -143,8 +150,8 @@ bool parseconf::getfkwtab()
 			if (!isblank(key.c_str()))
 			{
 				_kws.insert(pair < string, string > (trim(key), trim(value)));
-				//	 	cout << "key :" << key << "\t\t";
-				//		cout << "value:" << value << endl;
+	//	 	cout << "key :" << key << "\t\t";
+	//		cout << "value:" << value << endl;
 			}
 		}
 	}
@@ -204,13 +211,12 @@ string & trim(string & s)
 	s.erase(++c, s.end());
 	return s;
 }
-/*
-	 int main()
-	 {
-	 parseconf test2("./etc/logsys.conf");
-	 test2.parse_conf();
-	 return 0;
-	 }
-	 */
+
+int main()
+{
+	parseconf test2("./etc/logsys.conf");
+	test2.parse_conf();
+	return 0;
+}
 #endif
 // parseconf.h _PARSECONF_H_
