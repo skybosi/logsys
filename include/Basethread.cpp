@@ -11,12 +11,9 @@ Basethread::Basethread(int threadnum):_threadnum(threadnum)
 	_curthreadnum = 0;
 	pthread_attr_init(&attr);
 	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);	// 线程分离属性
-	if(!create())
-		exit(1);
-		
 }
 
-bool Basethread::create()
+bool Basethread::start()
 {
 	while (_curthreadnum < _threadnum)
 	{

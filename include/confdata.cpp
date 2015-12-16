@@ -6,7 +6,7 @@ logconf& logconf::operator=(const logconf& conf)
 {
 	DEFAULT_LEVEL = conf.DEFAULT_LEVEL;
 	MAX_LINE_LOG = conf.MAX_LINE_LOG;
-	LOGFSIZE = conf.MAX_LINE_LOG;
+	LOGFSIZE = conf.LOGFSIZE;
 	LOGPATH = conf.LOGPATH;
 	LOGFNAME = conf.LOGFNAME;
 	return *this;

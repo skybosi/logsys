@@ -25,7 +25,7 @@ class Basethread
 	  //cout << "Basethread will dead!" << endl;
 		pthread_attr_destroy(&attr);
 	}
-	bool create();
+	bool start();
 	virtual int run() = 0;
 };
 

@@ -1,7 +1,5 @@
 #ifndef _LTHREAD_H_
 #define _LTHREAD_H_
-#include "Basethread.h"
-#include "lmutex.h"
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
@@ -11,14 +9,17 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <cstring>
+#include "Basethread.h"
+#include "lmutex.h"
 
 using namespace std;
 void getlflist(const char *dir, vector < string > &files);
-static string getime();
+//static string getime();
 int checkfname(string logfpath);
 class lthread:public Basethread
 {
 	private:
+		ofstream _logfile;
 		string _flogpath;		//full of the file's path with name
 		long _maxfsize;			//max of the each log file's size
 		lmutex* _logfmutex;

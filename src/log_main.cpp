@@ -14,6 +14,7 @@ class test
 		{
 			//tmp->writeL(LDEBUG,"debug debug ...%20s %9d","format",LOG_DEBUG);
 			wlog(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
+			cout << "Ok !" << endl;
 		}
 	public:
 		logT* log;
@@ -26,7 +27,10 @@ int main(int argc,char** argv)
 {
 	test a;
 //	a.tmp->writeL(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
-	a.show();
-	cout << "Ok !" << endl;
+	while(1)
+	{
+		a.show();
+		sleep(1);
+	}
 	return 0;
 }

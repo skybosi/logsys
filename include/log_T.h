@@ -17,8 +17,6 @@
 #include "lmutex.h"
 #include "lthread.h"
 using namespace std;
-static string getime(bool chose);
-// true :for the log ;false: for logfile'name
 class logT
 {
 	private:
@@ -29,6 +27,7 @@ class logT
 		string _logdoc;				// log的帮助文档，由help()返回
 		int _line;					// 当前log所在文件的行号
 		string _curlfname;			// current log's name with path
+		friend class lthread;
 	private:
 		logconf _conf;
 		parseconf _pconf;
@@ -41,21 +40,11 @@ class logT
 		// oftream help();
 	public:
 		logT();
-		~logT()
-		{
-			cout << "logT will dead" << endl;
-			//if(_logmutex)
-			delete _logmutex;
-			if(_logfile)
-				_logfile.close();
-		};
+		~logT();
 		void writeL(int logtype,string classname,const char *lformat, ...);
 		string help() const;
 		void showall() const;
-		string getdoc() const
-		{
-			return _logdoc;
-		}
+		string getdoc() const { return _logdoc; }
 };
 
 #endif

@@ -1,7 +1,8 @@
 #include "lthread.h" 
 
-lthread::lthread(string logpath, long maxfsize):Basethread(1), _flogpath(logpath),
-	_maxfsize(maxfsize)
+static string getime();
+
+lthread::lthread(string logpath, long maxfsize):Basethread(1),_flogpath(logpath), _maxfsize(maxfsize)
 {
 	// cout << "log thread is coming..." << endl;
 	 _logfmutex = new lmutex();
@@ -9,11 +10,14 @@ lthread::lthread(string logpath, long maxfsize):Basethread(1), _flogpath(logpath
 
 int lthread::run()
 {
-	_logfmutex->setlock();
-	checkffull();
-
-	// checklogfnum(_flogpath);
-	 _logfmutex->setunlock();
+	while(1)
+	{
+		_logfmutex->setlock();
+		checkffull();
+		// checklogfnum(_flogpath);
+		_logfmutex->setunlock();
+		sleep(1);
+	}
 	return 0;
 }
 
@@ -30,31 +34,24 @@ bool lthread::checkffull()
 		cout << "我来了" << endl;
 		string newfname = oldpath.erase(len - 4) + getime() + ".log";
 		//cout << "new path:" << newfname << endl;
-		rename(_flogpath.c_str(), newfname.c_str());
-		cout << "rename ok!" << endl;
-		ofstream newlfile;
-		newlfile.open(_flogpath.c_str());
-		if (!newlfile)
+		//_logfile.close();
+		if (rename(_flogpath.c_str(), newfname.c_str()) == 0)
+		{
+			printf("Renamed %s to %s\n", _flogpath.c_str(), newfname.c_str());
+		}
+		else
+			perror("rename");
+		_logfile.open(_flogpath.c_str(), ios::out | ios::app | ios::binary);
+		if (!_logfile)
 		{
 			cerr << "open log file error!" << endl;
 			exit(1);
 		}
-		newlfile.close();
 		return true;
 	}
 	else
 	{
 		cout << "log file is not full! come on baby!" << endl;
-	/*
-		ofstream newlfile;
-		newlfile.open(_flogpath.c_str());
-		if (!newlfile)
-		{
-			cerr << "open log file error!" << endl;
-			exit(1);
-		}
-		newlfile.close();
-		*/
 		return false;
 	}
 }

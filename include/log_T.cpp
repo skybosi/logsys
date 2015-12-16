@@ -1,5 +1,36 @@
 #include "log_T.h"
 
+static string getime(bool chose);
+// true :for the log ;false: for logfile'name
+
+logT::logT()
+{
+	cout << "logT come on" << endl;
+	_logdoc = help();
+	_logmutex = new lmutex(); 
+	setlconf();
+	_curlfname = _conf.LOGPATH + _conf.LOGFNAME + ".log";
+	_checklthread = new lthread(_curlfname,_conf.LOGFSIZE);
+	_checklthread->start();
+	_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
+	if (!_logfile)
+	{
+		cerr << "open log file error!" << endl;
+		exit(1);
+	}
+//	showall();
+}
+
+logT::~logT()
+{
+	cout << "logT will dead" << endl;
+	//if(_logmutex)
+	delete _logmutex;
+	delete _checklthread;
+	if(_logfile)
+		_logfile.close();
+}
+
 void logT::setlconf()
 {
 	parseconf _pconf("/home/dejian/myspace/git/logsys/etc/logsys.conf");
@@ -9,24 +40,6 @@ void logT::setlconf()
 	string lastpos = _conf.LOGPATH.substr(_conf.LOGPATH.size() - 1);
 	if (lastpos != "/")
 		_conf.LOGPATH.append("/");
-}
-
-logT::logT()
-{
-	_logmutex = new lmutex(); 
-	_logdoc = help();
-	setlconf();
-	_curlfname = _conf.LOGPATH + _conf.LOGFNAME + ".log";
-	showall();
-	cout << "logT come on" << endl;
-	_checklthread = new lthread(_curlfname,_conf.LOGFSIZE);
-	_checklthread->run();
-	_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
-	if (!_logfile)
-	{
-		cerr << "open log file error!" << endl;
-		exit(1);
-	}
 }
 
 void logT::writeL(int loghere,string classname,const char *lformat, ...)
@@ -43,9 +56,9 @@ void logT::writeL(int loghere,string classname,const char *lformat, ...)
 		_logfile << "[ " << _classname << " ]" << BLK;
 		_logfile << llev2str() << BLK;
 		_logfile << _line << BLK;
-		//cout << "line:" << _line << BLK;
+		cout << "line:" << _line << BLK;
 		_strlog = lfmt(st, lformat);
-		//cout << _strlog << endl;
+		cout << _strlog << endl;
 		_logfile << _strlog << endl;
 	}
 	_logmutex->setunlock();
