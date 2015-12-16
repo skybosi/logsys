@@ -14,17 +14,18 @@
 
 using namespace std;
 void getlflist(const char *dir, vector < string > &files);
-//static string getime();
 int checkfname(string logfpath);
 class lthread:public Basethread
 {
+
 	private:
-		ofstream _logfile;
+		bool renameflag;
 		string _flogpath;		//full of the file's path with name
 		long _maxfsize;			//max of the each log file's size
 		lmutex* _logfmutex;
 	public:
-		lthread(string logpath, long maxfsize);
+		friend class logT;
+		lthread(string& logpath, long maxfsize);
 		~lthread()
 		{
 		//	cout << "log thread will deading " << endl;

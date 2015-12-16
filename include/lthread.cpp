@@ -2,7 +2,7 @@
 
 static string getime();
 
-lthread::lthread(string logpath, long maxfsize):Basethread(1),_flogpath(logpath), _maxfsize(maxfsize)
+lthread::lthread(string& logpath, long maxfsize):Basethread(1),_flogpath(logpath), _maxfsize(maxfsize),renameflag(false)
 {
 	// cout << "log thread is coming..." << endl;
 	 _logfmutex = new lmutex();
@@ -32,9 +32,10 @@ bool lthread::checkffull()
 	if (fsize > _maxfsize)
 	{
 		cout << "我来了" << endl;
-		string newfname = oldpath.erase(len - 4) + getime() + ".log";
+/*		string newfname = oldpath.erase(len - 4) + getime() + ".log";
 		//cout << "new path:" << newfname << endl;
-		//_logfile.close();
+//		_logfile.close();
+//		delete _logfile;
 		if (rename(_flogpath.c_str(), newfname.c_str()) == 0)
 		{
 			printf("Renamed %s to %s\n", _flogpath.c_str(), newfname.c_str());
@@ -47,7 +48,9 @@ bool lthread::checkffull()
 			cerr << "open log file error!" << endl;
 			exit(1);
 		}
-		return true;
+		*/
+		renameflag = true;
+		return renameflag;
 	}
 	else
 	{
@@ -143,4 +146,3 @@ static string getime()
 	strftime(curtime, sizeof(curtime), "_%y%m%d%H%M%S", localtime(&now_time));
 	return curtime;
 }
-

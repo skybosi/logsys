@@ -27,7 +27,7 @@ class logT
 		string _logdoc;				// log的帮助文档，由help()返回
 		int _line;					// 当前log所在文件的行号
 		string _curlfname;			// current log's name with path
-		friend class lthread;
+//		friend class lthread;
 	private:
 		logconf _conf;
 		parseconf _pconf;
@@ -37,6 +37,7 @@ class logT
 		string lfmt(va_list st, const char *lformat, ...);
 		void setlconf();				// set logsys's conf
 		string llev2str();
+		void relname();
 		// oftream help();
 	public:
 		logT();
