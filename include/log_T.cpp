@@ -7,7 +7,7 @@ logT::logT()
 {
 	cout << "logT come on" << endl;
 	_logdoc = help();
-	_logmutex = new lmutex();
+	//_logmutex = new lmutex();
 	setlconf();
 	_curlfname = _conf.LOGPATH + _conf.LOGFNAME + ".log";
 	_checklthread = new lthread(_curlfname, _conf.LOGFSIZE);
@@ -25,10 +25,13 @@ logT::~logT()
 {
 	cout << "logT will dead" << endl;
 	// if(_logmutex)
-	delete _logmutex;
+//	delete _logmutex;
 	delete _checklthread;
 	if (_logfile)
+	{
+		cout << "log file will close...." << endl;
 		_logfile.close();
+	}
 }
 
 void logT::setlconf()
@@ -64,7 +67,8 @@ void logT::relname()
 
 void logT::writeL(int loghere, string classname, const char *lformat, ...)
 {
-	_logmutex->setlock();
+	//_logmutex->setlock();
+	_checklthread->_logfmutex->setlock();
 	if(_checklthread->renameflag)
 	{
 		relname();
@@ -81,12 +85,14 @@ void logT::writeL(int loghere, string classname, const char *lformat, ...)
 		_logfile << "[ " << _classname << " ]" << BLK;
 		_logfile << llev2str() << BLK;
 		_logfile << _line << BLK;
-		cout << "line:" << _line << BLK;
 		_strlog = lfmt(st, lformat);
-		cout << _strlog << endl;
 		_logfile << _strlog << endl;
+
+		cout << "line:" << _line << BLK;
+		cout << _strlog << endl;
 	}
-	_logmutex->setunlock();
+	//_logmutex->setunlock();
+	_checklthread->_logfmutex->setunlock();
 
 }
 

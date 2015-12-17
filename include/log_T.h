@@ -20,25 +20,24 @@ using namespace std;
 class logT
 {
 	private:
+		int _line;					// 当前log所在文件的行号
 		int _lognum;				// 当前log的级别
-		ofstream _logfile;
-		string _classname;
 		string _strlog;				// 每次log的值
 		string _logdoc;				// log的帮助文档，由help()返回
-		int _line;					// 当前log所在文件的行号
+		ofstream _logfile;
+		string _classname;
 		string _curlfname;			// current log's name with path
 //		friend class lthread;
 	private:
 		logconf _conf;
 		parseconf _pconf;
-		lmutex* _logmutex;
+		//lmutex* _logmutex;
 		lthread* _checklthread;
 	private:
 		string lfmt(va_list st, const char *lformat, ...);
 		void setlconf();				// set logsys's conf
 		string llev2str();
 		void relname();
-		// oftream help();
 	public:
 		logT();
 		~logT();

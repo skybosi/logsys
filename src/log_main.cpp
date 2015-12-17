@@ -27,7 +27,8 @@ int main(int argc,char** argv)
 {
 	test a;
 //	a.tmp->writeL(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
-	while(1)
+	int times= 10;
+	while(times--)
 	{
 		a.show();
 		sleep(1);

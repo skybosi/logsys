@@ -4,7 +4,7 @@ static string getime();
 
 lthread::lthread(string& logpath, long maxfsize):Basethread(1),_flogpath(logpath), _maxfsize(maxfsize),renameflag(false)
 {
-	// cout << "log thread is coming..." << endl;
+	 cout << "log thread is coming..." << endl;
 	 _logfmutex = new lmutex();
 }
 
@@ -26,37 +26,17 @@ int lthread::run()
 bool lthread::checkffull()
 {
 	long fsize = getfsize();
-	int len = _flogpath.size();
-	//cout << "old parh:" << _flogpath << endl;
-	string oldpath = _flogpath;
-	if (fsize > _maxfsize)
+	if (renameflag = false && fsize > _maxfsize)
 	{
 		cout << "我来了" << endl;
-/*		string newfname = oldpath.erase(len - 4) + getime() + ".log";
-		//cout << "new path:" << newfname << endl;
-//		_logfile.close();
-//		delete _logfile;
-		if (rename(_flogpath.c_str(), newfname.c_str()) == 0)
-		{
-			printf("Renamed %s to %s\n", _flogpath.c_str(), newfname.c_str());
-		}
-		else
-			perror("rename");
-		_logfile.open(_flogpath.c_str(), ios::out | ios::app | ios::binary);
-		if (!_logfile)
-		{
-			cerr << "open log file error!" << endl;
-			exit(1);
-		}
-		*/
 		renameflag = true;
-		return renameflag;
 	}
 	else
 	{
 		cout << "log file is not full! come on baby!" << endl;
-		return false;
+		renameflag = false;
 	}
+	return renameflag;
 }
 //get the size of log file
 long lthread::getfsize()

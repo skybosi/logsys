@@ -28,7 +28,7 @@ class lthread:public Basethread
 		lthread(string& logpath, long maxfsize);
 		~lthread()
 		{
-		//	cout << "log thread will deading " << endl;
+			cout << "log thread will deading " << endl;
 			delete _logfmutex;
 		}
 		int run();
