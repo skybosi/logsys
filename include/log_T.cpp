@@ -15,7 +15,7 @@ logT::logT()
 	_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
 	if (!_logfile)
 	{
-		cerr << "open log file error!" << endl;
+		cerr << "logT: open log file error!" << endl;
 		exit(1);
 	}
 	// showall();
@@ -60,7 +60,7 @@ void logT::relname()
 	_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
 	if (!_logfile)
 	{
-		cerr << "open log file error!" << endl;
+		cerr << "relname: open log file error!" << endl;
 		exit(1);
 	}
 }

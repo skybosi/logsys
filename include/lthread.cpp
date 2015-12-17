@@ -16,7 +16,7 @@ int lthread::run()
 		checkffull();
 		// checklogfnum(_flogpath);
 		_logfmutex->setunlock();
-		sleep(1);
+//		sleep(1);
 	}
 	return 0;
 }
@@ -26,7 +26,7 @@ int lthread::run()
 bool lthread::checkffull()
 {
 	long fsize = getfsize();
-	if (renameflag = false && fsize > _maxfsize)
+	if (renameflag == false && fsize > _maxfsize)
 	{
 		cout << "我来了" << endl;
 		renameflag = true;
