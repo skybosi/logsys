@@ -51,8 +51,8 @@ void getlflist(const char *dir,const char *ptfname,vector < lsfile_t > &files)
 			filelist.lstatus_t = statbuf.st_ctime; 
 			if (filelist.purefname_t.find(ptfname) == 0)
 			{
-//				cout << "file: " << filelist.purefname_t << "\t";
-//				printf("modify: %d\n",filelist.lmodify_t);
+				//				cout << "file: " << filelist.purefname_t << "\t";
+				//				printf("modify: %d\n",filelist.lmodify_t);
 				files.push_back(filelist);
 			}
 		}
@@ -76,29 +76,29 @@ string & delsuffix(string & filepath)
 
 bool sortbypurefname_t( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	    return v1.purefname_t > v2.purefname_t; //up sort  
+	return v1.purefname_t > v2.purefname_t; //up sort  
 }  
 bool sortbyaccess( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	    return v1.laccess_t > v2.laccess_t; //up sort  
+	return v1.laccess_t > v2.laccess_t; //up sort  
 }  
 bool sortbymodify( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	    return v1.lmodify_t > v2.lmodify_t; //up sort  
+	return v1.lmodify_t < v2.lmodify_t; //up sort  
 }  
 bool sortbystatus( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	    return v1.lstatus_t > v2.lstatus_t; //up sort  
+	return v1.lstatus_t > v2.lstatus_t; //up sort  
 }  
 void showalll(vector < lsfile_t > files)
 {
 	int size = files.size();
 	for(int i =0;i < size; i++)
 	{
-		cout << "purefname_t : " << files[i].purefname_t  << endl;
+		cout << "purefname_t : " << files[i].purefname_t  << "\t";
 		cout << "lmodify_t: " << files[i].lmodify_t << endl;
-		cout << "laccess_t: " << files[i].laccess_t << endl;
-		cout << "lstatus_t: " << files[i].lstatus_t << endl;
+		//	cout << "laccess_t: " << files[i].laccess_t << endl;
+		//		cout << "lstatus_t: " << files[i].lstatus_t << endl;
 	}
 }
 
@@ -122,15 +122,17 @@ int checkfname(string logfpath)
 		std::sort(files.begin(),files.end(),sortbymodify); 
 		while(delfnum--)
 		{
-			tmp = files.at(size-1);
-			if (remove(tmp.fullfname_t.c_str()) == 0)
-			{
-				printf("%s will be delete\n",tmp.fullfname_t.c_str());
-			}
-			else
-				perror("Remove");
+			int fpos = files.size()-1;
+			tmp = files.at(fpos);
+			/*			if (remove(tmp.fullfname_t.c_str()) == 0)
+							{
+							printf("%s will be delete\n",tmp.fullfname_t.c_str());
+							}
+							else
+							perror("Remove");*/
 			files.pop_back();
-			size--;
+			cout << "files size::::::::: " << files.size() << endl;
+			//size--;
 		}
 	}
 	cout << "sort by modify time: " << endl;

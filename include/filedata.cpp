@@ -1,7 +1,7 @@
 #include <algorithm>
 #include "Mdef.h"
 #include "filedata.h"
-filedata::filedata(string logfpath):_logfpath(logfpath)
+filedata::filedata(string logfpath):_logfpath(logfpath),rmflag(false)
 {
 }
 filedata::~filedata()
@@ -61,22 +61,22 @@ string & filedata::delsuffix(string & filepath)
 
 bool filedata::sortbyfilename( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	    return v1.purefname_t > v2.purefname_t; //up sort  
+	return v1.purefname_t < v2.purefname_t; //up sort  
 }  
 bool filedata::sortbyaccess( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	    return v1.laccess_t > v2.laccess_t; //up sort  
+	return v1.laccess_t < v2.laccess_t; //up sort  
 }  
 bool filedata::sortbymodify( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	    return v1.lmodify_t > v2.lmodify_t; //up sort  
+	return v1.lmodify_t < v2.lmodify_t; //up sort  
 }  
 bool filedata::sortbystatus( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	    return v1.lstatus_t > v2.lstatus_t; //up sort  
+	return v1.lstatus_t < v2.lstatus_t; //up sort  
 }  
 
-int filedata::checkfname()
+bool filedata::checkfname()
 {
 	string purefname;
 	size_t pos = _logfpath.rfind("/");
@@ -86,49 +86,65 @@ int filedata::checkfname()
 	string dir = _logfpath.erase(pos+1);
 	cout << "dir: " << dir << endl;
 	getlflist(dir.c_str(),purefname.c_str());
+	//sleep(1);
 	lsfile_t tmp;
 	int size = _files.size();
+	cout << "filedata size: " << size << endl;
 	int delfnum = size - DEFAULT_LNUM;
+	cout << "哈哈哈哈哈哈: " << rmflag << "delfnum :"<< delfnum << endl;
 	if(delfnum > 0)
 	{
-		cout << "size: " << size << endl;
+		rmflag = true;
 		std::sort(_files.begin(),_files.end(),sortbymodify); 
 		while(delfnum--)
 		{
-			tmp = _files.at(size-1);
+			int fpos = _files.size()-1;
+			tmp = _files.at(fpos);
+			cout << "tmp file:" << tmp.purefname_t << endl;
 			_delfiles.push_back(tmp);
+			if (remove(tmp.fullfname_t.c_str()) == 0)
+			{
+				printf("%s will be delete\n",tmp.fullfname_t.c_str());
+			}
+			else
+				perror("Remove");
 			_files.pop_back();
-			size--;
+			cout << "files mubs: " << _files.size() << endl;
 		}
-		deloldfile();
+		//std::vector<lsfile_t>().swap(_files);
+		//	_files.clear();
 	}
 	//cout << "sort by modify time: " << endl;
-//	showalll(_files);
-	return size;
+	return rmflag;
 }
 
 bool filedata::deloldfile()
 {
+	showalll(_delfiles);
+	//sleep(10);
 	int delfnum = _delfiles.size();
+	cout << "delfnum :" << delfnum << endl;
 	for(int i = 0; i < delfnum; i++)
 	{
 		if (remove(_delfiles[i].fullfname_t.c_str()) == 0)
 		{
+			rmflag = false;
 			printf("%s will be delete\n",_delfiles[i].fullfname_t.c_str());
-			sleep(10);
 		}
 		else
 		{
+			rmflag = true;
 			perror("Remove");
-			return false;
 		}
 	}
-	return true;
+	//std::vector<lsfile_t>().swap(_delfiles);
+	//_delfiles.clear();
+	return rmflag;
 }
 void filedata::showalll(vector < lsfile_t > files) const
 {
 	int size = files.size();
-	cout << "size: " << size << endl;
+	cout << "showalll size: " << size << endl;
 	for (int i = 0; i < size; i++)
 	{
 		cout << "path        : " << files[i].paths << endl;
@@ -141,13 +157,13 @@ void filedata::showalll(vector < lsfile_t > files) const
 }
 
 /*
-int main()
-{
-	string path = "./log/first.log";
-	int lognum = 0;
-	lognum = checkfname(path);
-	cout << "======================" << endl;
-	cout << "lognum: " << lognum << endl;
-	return 0;
-}
-*/
+	 int main()
+	 {
+	 string path = "./log/first.log";
+	 int lognum = 0;
+	 lognum = checkfname(path);
+	 cout << "======================" << endl;
+	 cout << "lognum: " << lognum << endl;
+	 return 0;
+	 }
+	 */
