@@ -8,8 +8,8 @@
 INCLUDE=include
 SRC=src/log_main.cpp
 LIB=lib
-OBJ = Basethread.o confdata.o lmutex.o log_T.o lthread.o parseconf.o	
-HEADERS = Basethread.h confdata.h lmutex.h log_T.h lthread.h Mdef.h parseconf.h	
+OBJ = Basethread.o confdata.o lmutex.o log_T.o filedata.o lthread.o parseconf.o	
+HEADERS = Basethread.h confdata.h lmutex.h log_T.h filedata.h lthread.h Mdef.h parseconf.h	
 LIB_SRC = $(INCLUDE)/*.cpp
 CC = gcc
 CXX = g++

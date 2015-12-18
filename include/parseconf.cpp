@@ -6,7 +6,7 @@ parseconf::parseconf(string path):_path(path)
 	_confile.open(_path.c_str());
 	if (!_confile)
 	{
-		cerr << "open log file error!" << endl;
+		cerr << "parseconf open log file error!" << endl;
 		exit(1);
 	}
 }

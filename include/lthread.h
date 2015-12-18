@@ -11,7 +11,7 @@
 #include <cstring>
 #include "Basethread.h"
 #include "lmutex.h"
-
+#include "filedata.h"
 using namespace std;
 void getlflist(const char *dir, vector < string > &files);
 int checkfname(string logfpath);
@@ -23,6 +23,7 @@ class lthread:public Basethread
 		string _flogpath;		//full of the file's path with name
 		long _maxfsize;			//max of the each log file's size
 		lmutex* _logfmutex;
+		filedata* _filedata;
 	public:
 		friend class logT;
 		lthread(string& logpath, long maxfsize);

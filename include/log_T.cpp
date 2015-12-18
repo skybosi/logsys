@@ -37,7 +37,8 @@ logT::~logT()
 void logT::setlconf()
 {
 	// parseconf _pconf("/home/dejian/myspace/git/logsys/etc/logsys.conf");
-	parseconf _pconf("./etc/logsys.conf");
+	parseconf _pconf("/home/dejian.fei/myspace/git/logsys/etc/logsys.conf");
+	//parseconf _pconf("../etc/logsys.conf");
 	_pconf.parse_conf();
 	_conf = _pconf._lconf;		// get configuration 
 	string lastpos = _conf.LOGPATH.substr(_conf.LOGPATH.size() - 1);
