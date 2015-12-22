@@ -45,6 +45,6 @@ initdir:
 	mkdir -p log
 	
 clean:
-	rm -rf $(LIB)/* ${TARGET} lib bin log
+	rm -rf $(LIB)/* ${TARGET} lib bin log/*
 
 .PHONY:test debug

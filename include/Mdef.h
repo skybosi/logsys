@@ -23,7 +23,6 @@ typedef std::map <std::string, std::string> strm;
 #define INT int
 #define LONG long
 #define DOBL double
-#define DEFAULT_LNUM 10
 #define CLOGFMT(_C, _X) #_C "\t[T%08X] " _X, (uint32)(100)
 
 /* 

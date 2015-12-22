@@ -37,7 +37,7 @@ class logT
 		string lfmt(va_list st, const char *lformat, ...);
 		void setlconf();				// set logsys's conf
 		string llev2str();
-		void relname();
+		bool relname();
 	public:
 		logT();
 		~logT();

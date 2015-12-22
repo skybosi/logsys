@@ -23,9 +23,14 @@ void parseconf::setconf()
 {
 	set(_lconf.DEFAULT_LEVEL, STR(DEFAULT_LEVEL));
 	set(_lconf.MAX_LINE_LOG, STR(MAX_LINE_LOG));
+	set(_lconf.DEFAULT_LNUM, STR(DEFAULT_LNUM));
 	set(_lconf.LOGPATH, STR(LOGPATH));
+	string lastpos = _lconf.LOGPATH.substr(_lconf.LOGPATH.size() - 1);
+	if (lastpos != "/")
+		_lconf.LOGPATH.append("/");
 	set(_lconf.LOGFNAME, STR(LOGFNAME));
 	set(_lconf.LOGFSIZE, STR(LOGFSIZE));
+	_lconf.FULLPATH = _lconf.LOGPATH + _lconf.LOGFNAME + ".log";
 //	cout << _lconf;
 }
 

@@ -10,7 +10,7 @@
 #include <cstring>
 #include <vector>
 #include <algorithm>
-
+#include "confdata.h"
 using namespace std;
 class filedata
 {
@@ -24,20 +24,22 @@ class filedata
 			time_t laccess_t;
 			time_t lstatus_t;
 		}lsfile_t;
-		bool rmflag;
-		string _logfpath;
 		vector < lsfile_t > _files;
 		vector < lsfile_t > _delfiles;
+		logconf _conf;
 	private:
 		string & delsuffix(string & filepath);
 		static bool sortbyfilename( const lsfile_t &v1, const lsfile_t &v2);
 		static bool sortbyaccess( const lsfile_t &v1, const lsfile_t &v2);
 		static bool sortbymodify( const lsfile_t &v1, const lsfile_t &v2);
 		static bool sortbystatus( const lsfile_t &v1, const lsfile_t &v2);
+		bool findafile(string& tfile);
 	public:
-		filedata(string logfpath);
+		bool rmflag;		//true:  delete go on;
+										//false: delete finish 
+		filedata(logconf& conf);
 		~filedata();
-		void getlflist(const char *dir,const char *ptfname);
+		int getlflist(const char *dir,const char *ptfname);
 		bool  checkfname();
 		bool deloldfile();
 		void showalll(vector < lsfile_t > files)const;

@@ -74,7 +74,7 @@ string & delsuffix(string & filepath)
 	return filepath;
 }
 
-bool sortbypurefname_t( const lsfile_t &v1, const lsfile_t &v2)  
+bool sortbyfilename( const lsfile_t &v1, const lsfile_t &v2)  
 {  
 	return v1.purefname_t > v2.purefname_t; //up sort  
 }  
@@ -113,16 +113,20 @@ int checkfname(string logfpath)
 	cout << "dir: " << dir << endl;
 	vector < lsfile_t > files;
 	getlflist(dir.c_str(),purefname.c_str(),files);
+	showalll(files);
 	lsfile_t tmp;
 	int size = files.size();
 	int delfnum = size - DEFAULT_LNUM;
 	if(delfnum)
 	{
 		cout << "size: " << size << endl;
-		std::sort(files.begin(),files.end(),sortbymodify); 
+		std::sort(files.begin(),files.end(),sortbyfilename); 
+		showalll(files);
 		while(delfnum--)
 		{
 			int fpos = files.size()-1;
+			if(fpos > 0)
+			{
 			tmp = files.at(fpos);
 			/*			if (remove(tmp.fullfname_t.c_str()) == 0)
 							{
@@ -131,8 +135,10 @@ int checkfname(string logfpath)
 							else
 							perror("Remove");*/
 			files.pop_back();
-			cout << "files size::::::::: " << files.size() << endl;
+//			cout << "files size::::::::: " << files.size() << endl;
 			//size--;
+			}
+			break;
 		}
 	}
 	cout << "sort by modify time: " << endl;

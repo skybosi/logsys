@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <cstring>
 #include "Basethread.h"
+#include "confdata.h"
 #include "lmutex.h"
 #include "filedata.h"
 using namespace std;
@@ -20,13 +21,12 @@ class lthread:public Basethread
 
 	private:
 		bool renameflag;
-		string _flogpath;		//full of the file's path with name
-		long _maxfsize;			//max of the each log file's size
+		logconf _conf;
 		lmutex* _logfmutex;
 		filedata* _filedata;
 	public:
 		friend class logT;
-		lthread(string& logpath, long maxfsize);
+		lthread(logconf& conf);
 		~lthread()
 		{
 			cout << "log thread will deading " << endl;

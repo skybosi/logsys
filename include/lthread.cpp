@@ -1,12 +1,11 @@
 #include "lthread.h" 
 
-static string getime();
-
-lthread::lthread(string& logpath, long maxfsize):Basethread(1),_flogpath(logpath), _maxfsize(maxfsize),renameflag(false)
+//lthread::lthread(string& logpath, long maxfsize):Basethread(1),_flogpath(logpath), _maxfsize(maxfsize),renameflag(false)
+lthread::lthread(logconf& conf):Basethread(1),_conf(conf),renameflag(false)
 {
 	 cout << "log thread is coming..." << endl;
 	 _logfmutex = new lmutex();
-	 _filedata = new filedata(logpath);
+	 _filedata = new filedata(_conf);
 }
 
 int lthread::run()
@@ -15,10 +14,9 @@ int lthread::run()
 	{
 		_logfmutex->setlock();
 		checkffull();
-		_filedata->checkfname();
-		// checklogfnum(_flogpath);
+		if(_filedata->checkfname())
+			_filedata->deloldfile();
 		_logfmutex->setunlock();
-//		sleep(1);
 	}
 	return 0;
 }
@@ -28,7 +26,7 @@ int lthread::run()
 bool lthread::checkffull()
 {
 	long fsize = getfsize();
-	if (renameflag == false && fsize > _maxfsize)
+	if (renameflag == false && fsize >= _conf.LOGFSIZE)
 	{
 		cout << "我来了" << endl;
 		renameflag = true;
@@ -43,21 +41,11 @@ bool lthread::checkffull()
 //get the size of log file
 long lthread::getfsize()
 {
-	const char *filename = _flogpath.c_str();
+	const char *filename = _conf.FULLPATH.c_str();
 	struct stat finfo;
 	memset(&finfo, 0, sizeof(finfo));
 	stat(filename, &finfo);
 	long fsize = finfo.st_size;
 	cout << "log file size: " << fsize << endl;
 	return fsize;
-}
-
-// check the log file's numbers
-static string getime()
-{
-	time_t now_time = time(NULL);;
-	char curtime[64];
-	memset(&curtime, 0, sizeof(curtime));
-	strftime(curtime, sizeof(curtime), "_%y%m%d%H%M%S", localtime(&now_time));
-	return curtime;
 }
