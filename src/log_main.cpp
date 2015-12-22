@@ -1,4 +1,5 @@
 #include "log_T.h"
+#include "Mdef.h"
 #include <string>
 using namespace std;
 class test
@@ -13,7 +14,8 @@ class test
 		void show()
 		{
 			//tmp->writeL(LDEBUG,"debug debug ...%20s %9d","format",LOG_DEBUG);
-			wlog(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
+			//wlog(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
+			(*log)(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
 			cout << "Ok !" << endl;
 		}
 	public:

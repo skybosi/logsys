@@ -42,6 +42,9 @@ class logT
 		logT();
 		~logT();
 		void writeL(int logtype,string classname,const char *lformat, ...);
+		template <class T>
+		void operator()(int loghere,T t,const char *lformat,...);
+	//	void operator()(int logtype,string& classname,const char *lformat,...);
 		string help() const;
 		void showall() const;
 		string getdoc() const { return _logdoc; }

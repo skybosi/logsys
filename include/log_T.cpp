@@ -101,6 +101,38 @@ void logT::writeL(int loghere, string classname, const char *lformat, ...)
 	_checklthread->_logfmutex->setunlock();
 
 }
+template <class T>
+void logT::operator()(int loghere,T t,const char *lformat,...)
+{
+	_checklthread->_logfmutex->setlock();
+	_classname = typeid(t).name();
+	_classname = _classname.substr(1);	// 去掉类名长度
+	if(_checklthread->renameflag == true)
+	{
+		if(relname())
+		{
+			_checklthread->renameflag = false;
+		}
+	}
+	_lognum = loghere & 7;		// get logtype
+	_line = loghere >> 3;		// get log line
+	if (_lognum <= _conf.DEFAULT_LEVEL)
+	{
+		_logfile << getime(true) << BLK;
+		_logfile << "[ " << _classname << " ]" << BLK;
+		_logfile << llev2str() << BLK;
+		_logfile << _line << BLK;
+		va_list st;
+		va_start(st, lformat);
+		_strlog = lfmt(st, lformat);
+		_logfile << _strlog << endl;
+
+		cout << "line:" << _line << BLK;
+		cout << _strlog << endl;
+	}
+	//_logmutex->setunlock();
+	_checklthread->_logfmutex->setunlock();
+}
 
 string logT::llev2str()
 {
