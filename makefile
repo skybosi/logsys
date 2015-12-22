@@ -1,9 +1,7 @@
-#
-# Copyright (c) 2005, Wei Mingzhi. All rights reserved.
-#
-# Use, redistributions and modifications of this file is
-# unrestricted provided the above copyright notice is
-# preserved.
+# 
+#use the makefiel to build the project 
+#first: make a lib (static or dynamic)
+#second: use the lib to test the log system
 #
 INCLUDE=include
 SRC=src/log_main.cpp
