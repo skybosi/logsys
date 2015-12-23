@@ -17,12 +17,12 @@ enum log_level
 #define STR(T) #T
 typedef std::vector<std::string> strv;
 typedef std::map <std::string, std::string> strm;
-#define INT int
+#define INT  int
 #define LONG long
 #define DOBL double
 //log format
-#define LOGFMT(_C, _X) "[ "#_C" ]""\t[ F:%-08s M:%-04s L:%-03d ]->\t"_X,__FILE__,__FUNCTION__,__LINE__
-
+#define __THREADID__  pthread_self()
+#define LOGFMT(_C, _X) "[ "#_C" ]""\t[ F:%-08s M:%-04s L:%-03d T:%08X ]:>\t"_X,__FILE__,__FUNCTION__,__LINE__,__THREADID__
 /* 
 bool logenv = true;
    #define DEBUG ((logenv)?(logenv=false,(__LINE__)<<3,LOG_DEBUG):
@@ -37,12 +37,12 @@ bool logenv = true;
    ((logenv)?(logenv=false,(__LINE__),LOG_BAD): (LOG_BAD,(__LINE__))) #define CORE 
    ((logenv)?(logenv=false,(__LINE__),LOG_CORE): (LOG_CORE,(__LINE__))) 
 */
-#define LDEBUG		( (__LINE__) << 3 | ( LOG_DEBUG ) )
-#define LINFO			( (__LINE__) << 3 | ( LOG_INFO ) )
-#define LNOTICE		( (__LINE__) << 3 | ( LOG_NOTICE ) )
+#define LDEBUG		( (__LINE__) << 3 | ( LOG_DEBUG   ) )
+#define LINFO			( (__LINE__) << 3 | ( LOG_INFO    ) )
+#define LNOTICE		( (__LINE__) << 3 | ( LOG_NOTICE 	) )
 #define LWARNING	( (__LINE__) << 3 | ( LOG_WARNING ) )
-#define LERROR		( (__LINE__) << 3 | ( LOG_ERROR ) )
-#define LBAD			( (__LINE__) << 3 | ( LOG_BAD ) )
-#define LCORE			( (__LINE__) << 3 | ( LOG_CORE ) )
+#define LERROR		( (__LINE__) << 3 | ( LOG_ERROR   ) )
+#define LBAD			( (__LINE__) << 3 | ( LOG_BAD     ) )
+#define LCORE			( (__LINE__) << 3 | ( LOG_CORE    ) )
 
 #endif // _MDEF_H_ mdef.h header file
