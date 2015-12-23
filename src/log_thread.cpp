@@ -2,14 +2,22 @@
 #include <string>
 
 void *plog(void *arg);
-class test:public logT < test >
+class test
 {
 	public:
+		test();
 		void show()
 		{
+			(*log)(LDEBUG,LOGFMT(test,"debug debug ..."));
 			cout << "test show";
 		}
+	public:
+		logT* log;
 };
+test::test()
+{
+	log = new logT();
+}
 
 int main(int argc,char** argv)
 {
@@ -36,7 +44,7 @@ int main(int argc,char** argv)
 //	int i = 10000;
 	while(1)
 	{
-		a.writeL(LERROR, "bbbbbbbbbbbbbbbbbb"); 
+		a.show(); 
 	}
 	return 0;
 }
@@ -46,7 +54,7 @@ void *plog(void *arg)
 //	int i = 10000;
 	while(1)
 	{
-		a->writeL(LERROR,"aaaaaaaaa");
+		(*(a->log))(LERROR,LOGFMT(test,"aaaaaaaaa"));
 	}
 	return (void*)0;
 }

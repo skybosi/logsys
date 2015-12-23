@@ -4,7 +4,7 @@
 #second: use the lib to test the log system
 #
 INCLUDE=include
-SRC=src/log_main.cpp
+SRC=src/log_thread.cpp
 LIB=lib
 OBJ = Basethread.o confdata.o lmutex.o log_T.o filedata.o lthread.o parseconf.o	
 HEADERS = Basethread.h confdata.h lmutex.h log_T.h filedata.h lthread.h Mdef.h parseconf.h	
@@ -33,8 +33,10 @@ $(OBJ):$(LIB_SRC)
 ${TARGET}:$(SRC)
 	${CXX} $< $(CC_FLAG) $(INCLUDE) -L $(LIB) ${LLDFLAGS} -o ${TARGET}
 
-test:
+Test:
 	@./$(TARGET) 
+test:
+	@./$(TARGET) 2
 
 initdir:
 #	export LD_LIBRARY_PATH=./lib

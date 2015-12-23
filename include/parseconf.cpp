@@ -18,20 +18,25 @@ bool parseconf::parse_conf()
 	setconf();
 	return true;
 }
-
+//set the configuration;marco define in Mdef.h
 void parseconf::setconf()
 {
-	set(_lconf.DEFAULT_LEVEL, STR(DEFAULT_LEVEL));
-	set(_lconf.MAX_LINE_LOG, STR(MAX_LINE_LOG));
-	set(_lconf.DEFAULT_LNUM, STR(DEFAULT_LNUM));
-	set(_lconf.LOGPATH, STR(LOGPATH));
-	string lastpos = _lconf.LOGPATH.substr(_lconf.LOGPATH.size() - 1);
-	if (lastpos != "/")
-		_lconf.LOGPATH.append("/");
-	set(_lconf.LOGFNAME, STR(LOGFNAME));
-	set(_lconf.LOGFSIZE, STR(LOGFSIZE));
+	//set(_lconf.DEFAULT_LEVEL, STR(DEFAULT_LEVEL));
+	SET(_lconf.DEFAULT_LEVEL,DEFAULT_LEVEL);
+	//set(_lconf.MAX_LINE_LOG, STR(MAX_LINE_LOG));
+	SET(_lconf.MAX_LINE_LOG, MAX_LINE_LOG);
+	//set(_lconf.DEFAULT_LNUM, STR(DEFAULT_LNUM));
+	SET(_lconf.DEFAULT_LNUM, DEFAULT_LNUM);
+	//set(_lconf.LOGPATH, STR(LOGPATH));
+	SET(_lconf.LOGPATH, LOGPATH);
+	APPEND(_lconf.LOGPATH,"/");
+	//set(_lconf.LOGFNAME, STR(LOGFNAME));
+	SET(_lconf.LOGFNAME, LOGFNAME);
+	//set(_lconf.LOGFSIZE, STR(LOGFSIZE));
+	SET(_lconf.LOGFSIZE, LOGFSIZE);
+
 	_lconf.FULLPATH = _lconf.LOGPATH + _lconf.LOGFNAME + ".log";
-//	cout << _lconf;
+	cout << _lconf;
 }
 
 // a series of set function for set the configuration 

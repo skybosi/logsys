@@ -23,6 +23,13 @@ typedef std::map <std::string, std::string> strm;
 //log format
 #define __THREADID__  pthread_self()
 #define LOGFMT(_C, _X) "[ "#_C" ]""\t[ F:%-08s M:%-04s L:%-03d T:%08X ]:>\t"_X,__FILE__,__FUNCTION__,__LINE__,__THREADID__
+#define SET(_C,_X) set(_C,#_X)
+/*
+	 string lastpos = _lconf.LOGPATH.substr(_lconf.LOGPATH.size() - 1);
+	 if (lastpos != "/")
+	 _lconf.LOGPATH.append("/");
+*/
+#define APPEND(_C,_X) ( (_C).substr((_C).size()-1) != (_X) ) ? _C.append((_X)) : _C
 /* 
 bool logenv = true;
    #define DEBUG ((logenv)?(logenv=false,(__LINE__)<<3,LOG_DEBUG):

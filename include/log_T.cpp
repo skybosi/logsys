@@ -34,16 +34,17 @@ logT::~logT()
 		_logfile.close();
 	}
 }
-
+//set the configuration
 void logT::setlconf()
-{
-	// parseconf _pconf("/home/dejian/myspace/git/logsys/etc/logsys.conf");
-	parseconf _pconf("/home/dejian.fei/myspace/git/logsys/etc/logsys.conf");
-	//parseconf _pconf("../etc/logsys.conf");
+{	
+	string parseconfpath = "/home/dejian.fei/myspace/git/logsys/etc/logsys.conf";
+	//string parseconfpath = "/home/dejian/myspace/git/logsys/etc/logsys.conf";
+	//string parseconfpath = "../etc/logsys.conf";
+	parseconf _pconf(parseconfpath);
 	_pconf.parse_conf();
 	_conf = _pconf._lconf;		// get configuration 
 }
-
+//rename the log file when size is over
 bool logT::relname()
 {
 	_logfile.close();
@@ -68,7 +69,7 @@ bool logT::relname()
 		return false;
 	}
 }
-
+//write log
 void logT::writeL(int loghere, string classname, const char *lformat, ...)
 {
 	//_logmutex->setlock();
@@ -101,6 +102,7 @@ void logT::writeL(int loghere, string classname, const char *lformat, ...)
 	_checklthread->_logfmutex->setunlock();
 
 }
+//write log with operator()
 void logT::operator()(int loghere,const char *lformat,...)
 {
 	_checklthread->_logfmutex->setlock();
@@ -129,7 +131,7 @@ void logT::operator()(int loghere,const char *lformat,...)
 	//_logmutex->setunlock();
 	_checklthread->_logfmutex->setunlock();
 }
-
+//log level to string
 string logT::llev2str()
 {
 	string Sloglev;
@@ -184,7 +186,7 @@ string logT::help()
 		<< " - string _logdoc :\t The log system'help doc.\n" << endl;
 	return helpdoc.str();
 }
-
+//get the time
 static string getime(bool chose)
 {
 	struct timeval tv;
@@ -205,7 +207,7 @@ static string getime(bool chose)
 	}
 	return curtime;
 }
-
+//format the message
 string logT::lfmt(va_list st, const char *lformat, ...)
 {
 	char strlog[_conf.MAX_LINE_LOG];
@@ -214,7 +216,7 @@ string logT::lfmt(va_list st, const char *lformat, ...)
 	va_end(st);
 	return strlog;
 }
-
+//show conf info
 void logT::showall() const
 {
 	cout << _conf;
