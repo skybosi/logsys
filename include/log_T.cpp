@@ -101,12 +101,9 @@ void logT::writeL(int loghere, string classname, const char *lformat, ...)
 	_checklthread->_logfmutex->setunlock();
 
 }
-template <class T>
-void logT::operator()(int loghere,T t,const char *lformat,...)
+void logT::operator()(int loghere,const char *lformat,...)
 {
 	_checklthread->_logfmutex->setlock();
-	_classname = typeid(t).name();
-	_classname = _classname.substr(1);	// 去掉类名长度
 	if(_checklthread->renameflag == true)
 	{
 		if(relname())
@@ -119,9 +116,8 @@ void logT::operator()(int loghere,T t,const char *lformat,...)
 	if (_lognum <= _conf.DEFAULT_LEVEL)
 	{
 		_logfile << getime(true) << BLK;
-		_logfile << "[ " << _classname << " ]" << BLK;
 		_logfile << llev2str() << BLK;
-		_logfile << _line << BLK;
+	//	_logfile << _line << BLK;
 		va_list st;
 		va_start(st, lformat);
 		_strlog = lfmt(st, lformat);
@@ -140,28 +136,28 @@ string logT::llev2str()
 	switch (_lognum)
 	{
 		case 0:
-			Sloglev = "[   LOG_CORE  ]: ";
+			Sloglev = "[   LOG_CORE  ]:!";//震惊 Shocked
 			break;
 		case 1:
-			Sloglev = "[   LOG_BAD   ]: ";
+			Sloglev = "[   LOG_BAD   ]:[";//严肃 seriously
 			break;
 		case 2:
-			Sloglev = "[  LOG_ERROR  ]: ";
+			Sloglev = "[  LOG_ERROR  ]:(";//沮丧 depressed
 			break;
 		case 3:
-			Sloglev = "[ LOG_WARNING ]: ";
+			Sloglev = "[ LOG_WARNING ]:|";//无语 speechless
 			break;
 		case 4:
-			Sloglev = "[  LOG_NOTICE ]: ";
+			Sloglev = "[  LOG_NOTICE ]:o";//了解 know
 			break;
 		case 5:
-			Sloglev = "[   LOG_INFO  ]: ";
+			Sloglev = "[   LOG_INFO  ]:)";//乐观 optimistic
 			break;
 		case 6:
-			Sloglev = "[  LOG_DEBUG  ]: ";
+			Sloglev = "[  LOG_DEBUG  ]:~";//无视 ignore
 			break;
 		default:
-			Sloglev = "[   Unkown    ]: ";
+			Sloglev = "[   Unkown    ]:?";//疑问 questions
 			break;
 	}
 	return Sloglev;
@@ -199,7 +195,7 @@ static string getime(bool chose)
 	memset(&curtime, 0, sizeof(curtime));
 	if (chose)
 	{
-		strftime(curtime, sizeof(curtime), "%Y-%m-%d %a %z %T", ptm);
+		strftime(curtime, sizeof(curtime), "%y-%m-%d %a %z %T", ptm);
 		sprintf(curtime, "%s.%03ld", curtime, tv.tv_usec / 1000);
 	}
 	else

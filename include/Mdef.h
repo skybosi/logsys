@@ -15,15 +15,13 @@ enum log_level
 };
 #define BLK "\t"
 #define STR(T) #T
-//write log's macro
-#define wlog(lev,clas,lformat,...)			{ log->writeL((lev),#clas,lformat, ##__VA_ARGS__);} 
-#define wlog2(clas,lev,lformat,args...)		{ clas temp; temp.writeL((lev),lformat, ##args);} 
 typedef std::vector<std::string> strv;
 typedef std::map <std::string, std::string> strm;
 #define INT int
 #define LONG long
 #define DOBL double
-#define CLOGFMT(_C, _X) #_C "\t[T%08X] " _X, (uint32)(100)
+//log format
+#define LOGFMT(_C, _X) "[ "#_C" ]""\t[ F:%-08s M:%-04s L:%-03d ]->\t"_X,__FILE__,__FUNCTION__,__LINE__
 
 /* 
 bool logenv = true;
