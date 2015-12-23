@@ -7,3 +7,5 @@ Log file is a text document that recording the log you want print everytime or e
 The log system is a oriented class system ,As a base template class ,as the class's father-class you want set log! But the log file is not oriented class ,it means the log file is several class's home,maybe a namespace or a module!
 ##log file
 The log file is update or recreate when the file's size is bigger than the DEFAULT_LFSIZE(=default log file size ,you set in etc/logsys.conf). The filename is module+time-tip+suffix(.log) ,the time-tip is create time.
+##log system DS(directory structure)
+![logsys.png](https://bitbucket.org/repo/M4bjKr/images/1004508629-logsys.png)
