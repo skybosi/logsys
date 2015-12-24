@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <map>
+
 enum log_level
 {
 	LOG_CORE = 0,
@@ -13,17 +14,24 @@ enum log_level
 	LOG_INFO,
 	LOG_DEBUG
 };
-#define BLK "\t"
+#define BLK "  "
 #define STR(T) #T
 typedef std::vector<std::string> strv;
 typedef std::map <std::string, std::string> strm;
 #define INT  int
 #define LONG long
 #define DOBL double
-//log format
-#define __THREADID__  pthread_self()
-#define LOGFMT(_C, _X) "[ "#_C" ]""\t[ F:%-08s M:%-04s L:%-03d T:%08X ]:>\t"_X,__FILE__,__FUNCTION__,__LINE__,__THREADID__
-#define SET(_C,_X) set(_C,#_X)
+//log of format (F:file M:method L:line T:thread)
+#define __THREADID__  	pthread_self()
+#define ALLFMT(_C, _X)	"[ "#_C" ]"BLK"[ F:%-08s M:%-04s L:%-03d T:%08X ]:>"BLK _X,__FILE__,__FUNCTION__,__LINE__,__THREADID__
+#define MLTFMT(_C, _X) 	"[ "#_C" ]"BLK"[ M:%-04s L:%-03d T:%08X ]:>"BLK _X,__FUNCTION__,__LINE__,__THREADID__
+#define MLFMT(_C, _X) 	"[ "#_C" ]"BLK"[ M:%-04s L:%-03d ]:>"BLK _X,__FUNCTION__,__LINE__
+#define LTFMT(_C, _X)  	"[ "#_C" ]"BLK"[ L:%-03d T:%08X ]:>"BLK _X,__LINE__,__THREADID__
+#define LFMT(_C, _X)   	"[ "#_C" ]"BLK"[ L:%-03d ]:>"BLK _X,__LINE__
+#define TFMT(_C, _X)   	"[ "#_C" ]"BLK"[ L:%08d ]:>"BLK _X,__THREADID__
+//set the each conf
+#define SET(_C,_X)			set(_C,#_X)
+//append the path,if need
 /*
 	 string lastpos = _lconf.LOGPATH.substr(_lconf.LOGPATH.size() - 1);
 	 if (lastpos != "/")

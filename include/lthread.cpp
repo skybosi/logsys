@@ -8,6 +8,16 @@ lthread::lthread(logconf& conf):Basethread(1),_conf(conf),renameflag(false)
 	 _filedata = new filedata(_conf);
 }
 
+lthread* lthread::_linstance = NULL;
+lthread* lthread::getlthread(logconf& conf)
+{
+	if(_linstance == NULL) //判断是否第一次调用
+	{
+		_linstance = new lthread(conf);
+	}
+	return _linstance;
+}
+
 int lthread::run()
 {
 	while(1)
@@ -34,7 +44,7 @@ bool lthread::checkffull()
 	else
 	{
 		cout << "log file is not full! come on baby!" << endl;
-		renameflag = false;
+//		renameflag = false;
 	}
 	return renameflag;
 }

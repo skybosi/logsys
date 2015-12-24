@@ -10,7 +10,8 @@ logT::logT()
 	//_logmutex = new lmutex();
 	setlconf();
 	_curlfname = _conf.FULLPATH;
-	_checklthread = new lthread(_conf);
+//	_checklthread = new lthread(_conf);
+	_checklthread = lthread::getlthread(_conf);
 	_checklthread->start();
 	//_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
 	_logfile.open( _conf.FULLPATH.c_str(), ios::out | ios::app | ios::binary);
@@ -117,16 +118,16 @@ void logT::operator()(int loghere,const char *lformat,...)
 	_line = loghere >> 3;		// get log line
 	if (_lognum <= _conf.DEFAULT_LEVEL)
 	{
+//		usleep(1000);
 		_logfile << getime(true) << BLK;
 		_logfile << llev2str() << BLK;
 	//	_logfile << _line << BLK;
 		va_list st;
 		va_start(st, lformat);
 		_strlog = lfmt(st, lformat);
-		_logfile << _strlog << endl;
-
 		cout << "line:" << _line << BLK;
 		cout << _strlog << endl;
+		_logfile << _strlog << endl;
 	}
 	//_logmutex->setunlock();
 	_checklthread->_logfmutex->setunlock();
@@ -138,28 +139,28 @@ string logT::llev2str()
 	switch (_lognum)
 	{
 		case 0:
-			Sloglev = "[   LOG_CORE  ]:!";//震惊 Shocked
+			Sloglev = "[  LOG_CORE ]:!";//震惊 Shocked
 			break;
 		case 1:
-			Sloglev = "[   LOG_BAD   ]:[";//严肃 seriously
+			Sloglev = "[  LOG_BAD  ]:[";//严肃 seriously
 			break;
 		case 2:
-			Sloglev = "[  LOG_ERROR  ]:(";//沮丧 depressed
+			Sloglev = "[ LOG_ERROR ]:(";//沮丧 depressed
 			break;
 		case 3:
-			Sloglev = "[ LOG_WARNING ]:|";//无语 speechless
+			Sloglev = "[LOG_WARNING]:|";//无语 speechless
 			break;
 		case 4:
-			Sloglev = "[  LOG_NOTICE ]:o";//了解 know
+			Sloglev = "[LOG_NOTICES]:o";//了解 know
 			break;
 		case 5:
-			Sloglev = "[   LOG_INFO  ]:)";//乐观 optimistic
+			Sloglev = "[ LOG_INFO  ]:)";//乐观 optimistic
 			break;
 		case 6:
-			Sloglev = "[  LOG_DEBUG  ]:~";//无视 ignore
+			Sloglev = "[ LOG_DEBUG ]:~";//无视 ignore
 			break;
 		default:
-			Sloglev = "[   Unkown    ]:?";//疑问 questions
+			Sloglev = "[  Unkown   ]:?";//疑问 questions
 			break;
 	}
 	return Sloglev;

@@ -15,7 +15,7 @@ class test
 		{
 			//tmp->writeL(LDEBUG,"debug debug ...%20s %9d","format",LOG_DEBUG);
 			//wlog(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
-			(*log)(LDEBUG,LOGFMT(test,"debug debug ...%20s %9d"),"format",LOG_DEBUG);
+			//(*log)(LDEBUG,LOGFMT(test,"debug debug ...%20s %9d"),"format",LOG_DEBUG);
 			cout << "Ok !" << endl;
 		}
 	public:

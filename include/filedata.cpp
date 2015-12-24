@@ -107,7 +107,7 @@ bool filedata::deloldfile()
 		rmflag = true;
 	else
 		rmflag = false;
-	//std::vector<lsfile_t>().swap(_delfiles);
+	std::vector<lsfile_t>().swap(_delfiles);
 	//_delfiles.clear();
 	return rmflag;
 }

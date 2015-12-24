@@ -8,17 +8,17 @@ class test
 		test();
 		void show()
 		{
-			(*log)(LDEBUG,LOGFMT(test,"debug debug ..."));
+			(*log)(LDEBUG,ALLFMT(test,"aaaaaa"));
 			cout << "test show";
 		}
 	public:
-		logT* log;
+		static logT* log;
 };
 test::test()
 {
-	log = new logT();
+	//log = new logT();
 }
-
+logT* test::log = new logT();
 int main(int argc,char** argv)
 {
 	if(argc < 2)
@@ -27,6 +27,7 @@ int main(int argc,char** argv)
 		return 0;
 	}
 	test a;
+	test b;
 	int nums = 0;
 	int threads = atoi(argv[1]);
 	pthread_t pth[threads];
@@ -54,7 +55,7 @@ void *plog(void *arg)
 //	int i = 10000;
 	while(1)
 	{
-		(*(a->log))(LERROR,LOGFMT(test,"aaaaaaaaa"));
+		(*(a->log))(LERROR,ALLFMT(test,"bbbbbbbbbb"));
 	}
 	return (void*)0;
 }

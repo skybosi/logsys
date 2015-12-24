@@ -14,8 +14,6 @@
 #include "lmutex.h"
 #include "filedata.h"
 using namespace std;
-void getlflist(const char *dir, vector < string > &files);
-int checkfname(string logfpath);
 class lthread:public Basethread
 {
 
@@ -24,12 +22,17 @@ class lthread:public Basethread
 		logconf _conf;
 		lmutex* _logfmutex;
 		filedata* _filedata;
-	public:
-		friend class logT;
+	private:
+		static lthread *_linstance;
 		lthread(logconf& conf);
+	public:
+		static lthread* getlthread(logconf& conf);
+		friend class logT;
 		~lthread()
 		{
 			cout << "log thread will deading " << endl;
+			if(_linstance)
+				delete _linstance;
 			delete _logfmutex;
 		}
 		int run();

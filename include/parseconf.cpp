@@ -1,5 +1,6 @@
 #include "parseconf.h"
-
+#include <cctype>
+#include <algorithm>
 parseconf::parseconf(string path):_path(path)
 {
 	cout << "confile will open..." << endl;
@@ -107,6 +108,7 @@ bool parseconf::getfkwtab()
 		{
 			size_t pos = line.find("=");
 			key = line.substr(0, pos);
+			transform(key.begin(), key.end(), key.begin(), ::toupper);
 			value = line.substr(pos + 1);
 			if (!isblank(key.c_str()))
 			{
