@@ -10,23 +10,35 @@ lthread::lthread(logconf & conf):Basethread(1), _conf(conf), renameflag(false)
 	_filedata = new filedata(_conf);
 }
 
-lthread *lthread::_linstance = NULL;
+//lthread *lthread::_linstance = NULL;
 lthread *lthread::getlthread(logconf & conf)
 {
+	static lthread *_linstance;
 	if (_linstance == NULL)		// 判断是否第一次调用
 	{
 		_linstance = new lthread(conf);
 	}
 	return _linstance;
 }
-
+/*
+lthread::~lthread
+{
+	if(_linstance)
+	{
+		_linstance = NULL;
+		delete _linstance;
+	}
+	delete _logfmutex;
+	cout << "log thread will deading " << endl;
+}
+*/
 int lthread::run()
 {
 	while (1)
 	{
 		_logfmutex->setlock();
 		//checkffull();
-		if (_filedata->checkfname())
+		if (_filedata->rmflag == false && _filedata->checkfname())
 			_filedata->deloldfile();
 		_logfmutex->setunlock();
 	}

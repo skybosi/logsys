@@ -26,16 +26,28 @@ class lthread:public Basethread
 	private:
 		static lthread *_linstance;
 		lthread(logconf& conf);
+		lthread(const lthread &);
+		lthread& operator = (const lthread &);
+		/*
+		class CGarbo   //它的唯一工作就是delete _linstance
+		{
+			public:
+				~CGarbo()
+				{
+					if(lthread::_linstance)
+					{
+						delete lthread::_linstance;
+						lthread::_linstance = NULL;
+						cout << "log thread will deading " << endl;
+					}
+				}
+		};
+		class CGarbo garbo;
+		*/
 	public:
 		static lthread* getlthread(logconf& conf);
 		friend class logT;
-		~lthread()
-		{
-			cout << "log thread will deading " << endl;
-			if(_linstance)
-				delete _linstance;
-			delete _logfmutex;
-		}
+		//~lthread();
 		int run();
 		long getfsize(FSU& fsu);		
 		bool checkffull();

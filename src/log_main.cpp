@@ -13,9 +13,7 @@ class test
 		}
 		void show()
 		{
-			//tmp->writeL(LDEBUG,"debug debug ...%20s %9d","format",LOG_DEBUG);
-			//wlog(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
-			//(*log)(LDEBUG,LOGFMT(test,"debug debug ...%20s %9d"),"format",LOG_DEBUG);
+			(*log)(LDEBUG,ALLFMT(test,"debug debug ...%20s %9d"),"format",LOG_DEBUG);
 			cout << "Ok !" << endl;
 		}
 	public:
@@ -29,13 +27,11 @@ int main(int argc,char** argv)
 {
 	test a;
 	cout << a.log->help();
-//	a.tmp->writeL(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
-//	int times= 10;
-//	while(times--)
+	int times= 10;
+	while(times--)
 //	while(1)
-//	{
-//		a.show();
-//		sleep(1);
-//	}
+	{
+		a.show();
+	}
 	return 0;
 }

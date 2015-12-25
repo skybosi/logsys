@@ -41,7 +41,7 @@ class logT
 		bool relname();
 	public:
 		logT(string parsefpath);
-		logT(const char* parsefpath){};
+//		logT(const char* parsefpath){};
 		~logT();
 		void writeL(int logtype,string classname,const char *lformat, ...);
 		void operator()(int loghere,const char *lformat,...);

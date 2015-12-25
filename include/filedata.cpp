@@ -51,7 +51,6 @@ int filedata::getlflist(const char *dir,const char *ptfname)
 bool filedata::checkfname()
 {
 	cout << "enter check file numbers: " << endl;
-	cout << _conf;
 	string dir = _conf.LOGPATH;
 	string patfile = _conf.LOGFNAME + "_";
 	int size = getlflist(dir.c_str(),patfile.c_str());

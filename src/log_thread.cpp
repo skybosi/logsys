@@ -41,8 +41,8 @@ int main(int argc,char** argv)
 			exit(1);
 		}
 	}
-//	int i = 10000;
-	while(1)
+	int i = 1000;
+	while(i--)
 	{
 		a.show(); 
 	}

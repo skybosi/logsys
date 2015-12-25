@@ -21,6 +21,7 @@ typedef enum fsizeunit
 	MB,
 }FSU;
 #define BLK "  "
+#define LSUFFIX ".log"
 #define STR(T) #T
 typedef std::vector<std::string> strv;
 typedef std::map <std::string, std::string> strm;

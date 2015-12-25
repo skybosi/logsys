@@ -2,6 +2,7 @@
 
 static string getime(bool chose);
 // true :for the log ;false: for logfile'name
+string & delsuffix(string & filepath);
 
 logT::logT(string parsefpath):_parsefpath(parsefpath)
 //logT::logT(const char* parsefpath):_parsefpath(parsefpath)
@@ -30,6 +31,7 @@ logT::~logT()
 	// if(_logmutex)
 	//	delete _logmutex;
 	delete _checklthread;
+	_checklthread = NULL;
 	if (_logfile)
 	{
 		cout << "log file will close...." << endl;
@@ -52,7 +54,7 @@ bool logT::relname()
 	_logfile.close();
 	int len = _curlfname.size();
 	string oldpath = _curlfname;
-	string newfname = oldpath.erase(len - 4) + getime(false) + ".log";
+	string newfname = delsuffix(oldpath) + getime(false) + LSUFFIX;
 	if (rename(_curlfname.c_str(), newfname.c_str()) == 0)
 	{
 		printf("Renamed %s to %s\n",_curlfname.c_str(), newfname.c_str());
@@ -110,7 +112,7 @@ void logT::writeL(int loghere, string classname, const char *lformat, ...)
 void logT::operator()(int loghere,const char *lformat,...)
 {
 	_checklthread->_logfmutex->setlock();
-	//if(_checklthread->renameflag == false)
+	if(_checklthread->renameflag == false)
 	{
 		if(_checklthread->checkffull())
 		{
@@ -243,4 +245,16 @@ void logT::showall() const
 {
 	cout << _conf;
 	cout << "_curlfname    : " << _curlfname << endl;
+}
+string & delsuffix(string & filepath)
+{                                 
+	if (filepath.empty())
+		return filepath;
+	size_t pos = filepath.rfind(".");
+	if (pos != filepath.npos)
+	{
+		// cout << "last point pos: " << pos << endl;
+		filepath.erase(pos);
+	}
+	return filepath;
 }

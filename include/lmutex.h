@@ -28,7 +28,7 @@ class lmutex
 			//cout << "delete the lock" << endl;
 		//	if(mutex != NULL && mutexattr != NULL)
 			{
-			    pthread_mutexattr_destroy(&mutexattr);
+				pthread_mutexattr_destroy(&mutexattr);
 				pthread_mutex_destroy(&mutex);
 			}
 		}
