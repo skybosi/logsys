@@ -23,18 +23,19 @@ class test
 };
 test::test()
 {
-	log = new logT();
+	log = new logT("/home/dejian.fei/myspace/git/logsys/etc/logsys.conf");
 }
 int main(int argc,char** argv)
 {
 	test a;
+	cout << a.log->help();
 //	a.tmp->writeL(LDEBUG,test,"debug debug ...%20s %9d","format",LOG_DEBUG);
 //	int times= 10;
 //	while(times--)
-	while(1)
-	{
-		a.show();
+//	while(1)
+//	{
+//		a.show();
 //		sleep(1);
-	}
+//	}
 	return 0;
 }

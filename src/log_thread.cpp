@@ -12,13 +12,12 @@ class test
 			cout << "test show";
 		}
 	public:
-		static logT* log;
+		logT* log;
 };
 test::test()
 {
-	//log = new logT();
+	log = new logT("/home/dejian.fei/myspace/git/logsys/etc/logsys.conf");
 }
-logT* test::log = new logT();
 int main(int argc,char** argv)
 {
 	if(argc < 2)

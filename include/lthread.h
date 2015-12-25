@@ -13,6 +13,7 @@
 #include "confdata.h"
 #include "lmutex.h"
 #include "filedata.h"
+//#include "Mdef.h"
 using namespace std;
 class lthread:public Basethread
 {
@@ -36,7 +37,7 @@ class lthread:public Basethread
 			delete _logfmutex;
 		}
 		int run();
-		long getfsize();		
+		long getfsize(FSU& fsu);		
 		bool checkffull();
 		bool checklogfnum(string logpath);
 };

@@ -9,6 +9,7 @@ class logconf
 		INT MAX_LINE_LOG;
 		INT DEFAULT_LNUM;
 		LONG LOGFSIZE;
+		FSU FSUNIT;
 		string LOGPATH;
 		string LOGFNAME;
 		string FULLPATH;

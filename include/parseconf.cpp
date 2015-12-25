@@ -35,7 +35,7 @@ void parseconf::setconf()
 	SET(_lconf.LOGFNAME, LOGFNAME);
 	//set(_lconf.LOGFSIZE, STR(LOGFSIZE));
 	SET(_lconf.LOGFSIZE, LOGFSIZE);
-
+	
 	_lconf.FULLPATH = _lconf.LOGPATH + _lconf.LOGFNAME + ".log";
 	cout << _lconf;
 }
@@ -61,6 +61,19 @@ bool parseconf::set(long &key, string keyname)
 	if (pos != _kws.end())
 	{
 		key = atol((pos->second).c_str());
+		if(keyname == "LOGFSIZE")
+		{
+			char unit = (pos->second).at((pos->second).size() - 1);
+			cout << "FSUNIT :" << unit << endl;
+			if (unit == 'B' || unit == 'b')
+				_lconf.FSUNIT = BYTE;
+			else if(unit == 'K' || unit == 'k')
+				_lconf.FSUNIT = KB;
+			else if(unit == 'M' || unit == 'm')
+				_lconf.FSUNIT = MB;
+			else
+				_lconf.FSUNIT = KB;
+		}
 		return true;
 	}
 	else

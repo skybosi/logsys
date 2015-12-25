@@ -3,14 +3,15 @@
 static string getime(bool chose);
 // true :for the log ;false: for logfile'name
 
-logT::logT()
+logT::logT(string parsefpath):_parsefpath(parsefpath)
+//logT::logT(const char* parsefpath):_parsefpath(parsefpath)
 {
 	cout << "logT come on" << endl;
 	_logdoc = help();
 	//_logmutex = new lmutex();
 	setlconf();
 	_curlfname = _conf.FULLPATH;
-//	_checklthread = new lthread(_conf);
+	//_checklthread = new lthread(_conf);
 	_checklthread = lthread::getlthread(_conf);
 	_checklthread->start();
 	//_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
@@ -38,10 +39,10 @@ logT::~logT()
 //set the configuration
 void logT::setlconf()
 {	
-	string parseconfpath = "/home/dejian.fei/myspace/git/logsys/etc/logsys.conf";
+	//string parseconfpath = "/home/dejian.fei/myspace/git/logsys/etc/logsys.conf";
 	//string parseconfpath = "/home/dejian/myspace/git/logsys/etc/logsys.conf";
 	//string parseconfpath = "../etc/logsys.conf";
-	parseconf _pconf(parseconfpath);
+	parseconf _pconf(_parsefpath);
 	_pconf.parse_conf();
 	_conf = _pconf._lconf;		// get configuration 
 }
@@ -55,7 +56,6 @@ bool logT::relname()
 	if (rename(_curlfname.c_str(), newfname.c_str()) == 0)
 	{
 		printf("Renamed %s to %s\n",_curlfname.c_str(), newfname.c_str());
-//		usleep(10);
 		_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
 		if (!_logfile)
 		{
@@ -75,11 +75,14 @@ void logT::writeL(int loghere, string classname, const char *lformat, ...)
 {
 	//_logmutex->setlock();
 	_checklthread->_logfmutex->setlock();
-	if(_checklthread->renameflag == true)
+	//if(_checklthread->renameflag == false)
 	{
-		if(relname())
+		if(_checklthread->checkffull())
 		{
-			_checklthread->renameflag = false;
+			if(relname())
+			{
+				_checklthread->renameflag = false;
+			}
 		}
 	}
 	_classname = classname;
@@ -107,21 +110,23 @@ void logT::writeL(int loghere, string classname, const char *lformat, ...)
 void logT::operator()(int loghere,const char *lformat,...)
 {
 	_checklthread->_logfmutex->setlock();
-	if(_checklthread->renameflag == true)
+	//if(_checklthread->renameflag == false)
 	{
-		if(relname())
+		if(_checklthread->checkffull())
 		{
-			_checklthread->renameflag = false;
+			if(relname())
+			{
+				_checklthread->renameflag = false;
+			}
 		}
 	}
 	_lognum = loghere & 7;		// get logtype
 	_line = loghere >> 3;		// get log line
 	if (_lognum <= _conf.DEFAULT_LEVEL)
 	{
-//		usleep(1000);
 		_logfile << getime(true) << BLK;
 		_logfile << llev2str() << BLK;
-	//	_logfile << _line << BLK;
+		//	_logfile << _line << BLK;
 		va_list st;
 		va_start(st, lformat);
 		_strlog = lfmt(st, lformat);
@@ -166,12 +171,28 @@ string logT::llev2str()
 	return Sloglev;
 }
 
-string logT::help()
-	const
+string logT::help() const
 {
 	ostringstream helpdoc;
 	helpdoc
 		<< "Welcome to use the log system!(2015.12 v0.2)\n"
+		<< "#This the logs system's configure file\n"
+		<< "This log system Now have set those default important variable\n"
+		<< "This is there means here:\n\n"
+		<< " LOGPATH       : the log save path\n"
+		<< " LOGFNAME      : the log filename\n"
+		<< " LOGFSIZE      : the log file default size(you can chose those unit [b/B(byte),k/K(kb),m/M(M)])\n"
+		<< " MAX_LINE_LOG  : the log message max size\n"
+		<< " DEFAULT_LNUM  : the log file's default numbers\n"
+		<< " DEFAULT_LEVEL : the log system default level\n\n"
+		<< "if you are not set one of the the will set default value\n"
+		<< "There are default value here:\n\n"
+		<< "  //  LOGPATH       = \".\";   \\\\\n"
+		<< " //   LOGFNAME      = \"test\"; \\\\\n"
+		<< "//    LOGFSIZE      = 10m;     \\\\\n"
+		<< "\\\\    MAX_LINE_LOG  = 1024;    //\n"
+		<< " \\\\   DEFAULT_LNUM  = 10;     //\n"
+		<< "  \\\\  DEFAULT_LEVEL = 7;     //\n\n"
 		<< "There are some methed(function) :\n"
 		<< " ● writeL(int logtype,const char* lfmt,...):\n"
 		<< "\t- logtype :The log'type that you want set\n"

@@ -14,6 +14,12 @@ enum log_level
 	LOG_INFO,
 	LOG_DEBUG
 };
+typedef enum fsizeunit
+{
+	BYTE = 0,
+	KB,
+	MB,
+}FSU;
 #define BLK "  "
 #define STR(T) #T
 typedef std::vector<std::string> strv;
