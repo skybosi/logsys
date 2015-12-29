@@ -21,17 +21,17 @@ lthread *lthread::getlthread(logconf & conf)
 	return _linstance;
 }
 /*
-lthread::~lthread
-{
-	if(_linstance)
-	{
-		_linstance = NULL;
-		delete _linstance;
-	}
-	delete _logfmutex;
-	cout << "log thread will deading " << endl;
-}
-*/
+	 lthread::~lthread
+	 {
+	 if(_linstance)
+	 {
+	 _linstance = NULL;
+	 delete _linstance;
+	 }
+	 delete _logfmutex;
+	 cout << "log thread will deading " << endl;
+	 }
+	 */
 int lthread::run()
 {
 	while (1)
@@ -50,7 +50,7 @@ int lthread::run()
 bool lthread::checkffull()
 {
 	cout << "我来了" << endl;
-	long fsize = getfsize(_conf.FSUNIT);
+	float fsize = getfsize(_conf.FSUNIT);
 	if (renameflag == false && fsize >= _conf.LOGFSIZE)
 	{
 		renameflag = true;
@@ -58,36 +58,36 @@ bool lthread::checkffull()
 	else
 	{
 		cout << "log file is not full! come on baby!" << endl;
-		// renameflag = false;
+		renameflag = false;
 	}
 	return renameflag;
 }
 
 // get the size of log file
-long lthread::getfsize(FSU& fsu)
+float lthread::getfsize(FSU& fsu)
 {
 	const char *filename = _conf.FULLPATH.c_str();
 	struct stat finfo;
 	memset(&finfo, 0, sizeof(finfo));
 	stat(filename, &finfo);
-	long fsize = finfo.st_size;
+	float fsize = (float)finfo.st_size;
 	switch (fsu)
 	{
-	case BYTE:
-		cout << "log file size: " << fsize << " Byte" << endl;
-		return fsize;
-		break;
-	case KB:
-		cout << "log file size: " << fsize << " Kb" << endl;
-		return fsize / 1024;
-		break;
-	case MB:
-		cout << "log file size: " << fsize << " Mb" << endl;
-		return fsize / (1024 * 1024);
-		break;
-	default:
-		cout << "log file size: " << fsize << " Kb" << endl;
-		return fsize;
-		break;
+		case BYTE:
+			cout << "log file size: " << fsize << " Byte" << endl;
+			break;
+		case KB:
+			fsize /= 1024;
+			cout << "log file size: " << fsize << " Kb" << endl;
+			break;
+		case MB:
+			fsize /= (1024 * 1024);
+			cout << "log file size: " << fsize << " Mb" << endl;
+			break;
+		default://KB
+			fsize /= 1024;
+			cout << "log file size: " << fsize << " Kb" << endl;
+			break;
 	}
+	return fsize;
 }

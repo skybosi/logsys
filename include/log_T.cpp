@@ -64,6 +64,7 @@ bool logT::relname()
 			cerr << "relname: open log file error!" << endl;
 			exit(1);
 		}
+		//_logfile <<"===" << newfname << "===" << endl;
 		return true;
 	}
 	else

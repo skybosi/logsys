@@ -49,7 +49,7 @@ class lthread:public Basethread
 		friend class logT;
 		//~lthread();
 		int run();
-		long getfsize(FSU& fsu);		
+		float getfsize(FSU& fsu);
 		bool checkffull();
 		bool checklogfnum(string logpath);
 };

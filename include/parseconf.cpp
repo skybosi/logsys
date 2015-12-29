@@ -1,6 +1,9 @@
 #include "parseconf.h"
 #include <cctype>
 #include <algorithm>
+#include <string.h>
+
+char* getapath(const char* rpath);
 parseconf::parseconf(string path):_path(path)
 {
 	cout << "confile will open..." << endl;
@@ -19,6 +22,27 @@ bool parseconf::parse_conf()
 	setconf();
 	return true;
 }
+string& getapath(string& rpath)
+{
+		cout << "kkkkkkkkkkLOGPATH: " << rpath << endl;
+	char bakpath[PATH_MAX] = {0};
+	char abspath[PATH_MAX] = {0};
+	getcwd(bakpath,PATH_MAX);
+	if(chdir(rpath.c_str()) == 0)
+	{
+		getcwd(abspath,PATH_MAX);
+		rpath = abspath;
+	}
+	else
+	{
+		cout << rpath << ": curpath is error!" << endl;
+		cout << bakpath << ": bakpath is error!" << endl;
+		cout << abspath << ": abspath is error!" << endl;
+	//	strcpy(abspath,bakpath);
+		rpath = bakpath;
+	}
+	return rpath;
+}
 //set the configuration;marco define in Mdef.h
 void parseconf::setconf()
 {
@@ -30,7 +54,7 @@ void parseconf::setconf()
 	SET(_lconf.DEFAULT_LNUM, DEFAULT_LNUM);
 	//set(_lconf.LOGPATH, STR(LOGPATH));
 	SET(_lconf.LOGPATH, LOGPATH);
-	APPEND(_lconf.LOGPATH,"/");
+	GETAPATH(_lconf.LOGPATH,PATHSEP); //If it is a relative path into an absolute path and append "/"
 	//set(_lconf.LOGFNAME, STR(LOGFNAME));
 	SET(_lconf.LOGFNAME, LOGFNAME);
 	//set(_lconf.LOGFSIZE, STR(LOGFSIZE));

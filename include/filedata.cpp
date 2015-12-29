@@ -53,7 +53,7 @@ bool filedata::checkfname()
 	cout << "enter check file numbers: " << endl;
 	string dir = _conf.LOGPATH;
 	string patfile = _conf.LOGFNAME + "_";
-	int size = getlflist(dir.c_str(),patfile.c_str());
+	int size = getlflist(dir.c_str(),patfile.c_str()); // 不包含 _conf.LOGFNAME的log文件
 	int delfnum = size - _conf.DEFAULT_LNUM;
 	showalll(_files);
 	cout << "filedata size: " << size << endl;
@@ -133,6 +133,8 @@ bool filedata::findafile(string& tfile)
 		cout << "new tfile1:" <<"[" << tfile << "]"<< endl;
 		return true;
 	}
+	else
+		return false;
 }
 
 void filedata::showalll(vector < lsfile_t > files) const
@@ -141,12 +143,12 @@ void filedata::showalll(vector < lsfile_t > files) const
 	cout << "showalll size: " << size << endl;
 	for (int i = 0; i < size; i++)
 	{
-//		cout << "path        : " << files[i].paths << endl;
+		cout << "path        : " << files[i].paths << endl;
 		cout << "purefname_t : " << files[i].purefname_t  << endl;
-//		cout << "fullfname_t : " << files[i].fullfname_t  << endl;
-//		cout << "lmodify_t   : " << files[i].lmodify_t << endl;
-//		cout << "laccess_t   : " << files[i].laccess_t << endl;
-//		cout << "lstatus_t   : " << files[i].lstatus_t << endl;
+		cout << "fullfname_t : " << files[i].fullfname_t  << endl;
+		cout << "lmodify_t   : " << files[i].lmodify_t << endl;
+		cout << "laccess_t   : " << files[i].laccess_t << endl;
+		cout << "lstatus_t   : " << files[i].lstatus_t << endl;
 	}
 }
 
@@ -165,19 +167,19 @@ string & filedata::delsuffix(string & filepath)
 
 bool filedata::sortbyfilename( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	return v1.purefname_t > v2.purefname_t; //up sort  
+	return v1.purefname_t > v2.purefname_t; //up sort
 }  
 bool filedata::sortbyaccess( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	return v1.laccess_t < v2.laccess_t; //up sort  
+	return v1.laccess_t > v2.laccess_t; //up sort
 }  
 bool filedata::sortbymodify( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	return v1.lmodify_t < v2.lmodify_t; //up sort  
+	return v1.lmodify_t > v2.lmodify_t; //up sort
 }  
 bool filedata::sortbystatus( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	return v1.lstatus_t < v2.lstatus_t; //up sort  
+	return v1.lstatus_t > v2.lstatus_t; //up sort
 }  
 
 

@@ -20,22 +20,45 @@ typedef enum fsizeunit
 	KB,
 	MB,
 }FSU;
+//operator system
+#if defined (__linux) || defined (__linux__) || defined (__unix__) || defined (__unix)
+	#define _LUNIX
+#else
+	#define _WIND
+#endif
+
 #define BLK "  "
+//log suffix
 #define LSUFFIX ".log"
-#define STR(T) #T
 typedef std::vector<std::string> strv;
 typedef std::map <std::string, std::string> strm;
 #define INT  int
 #define LONG long
 #define DOBL double
+//path separator
+#ifdef _LUNIX
+	#define PATHSEP "/"
+#else
+	#define PATHSEP "\\"
+#endif
+
+#ifndef PATH_MAX
+	#define PATH_MAX  4096
+#endif
+
 //log of format (F:file M:method L:line T:thread)
-#define __THREADID__  	pthread_self()
-#define ALLFMT(_C, _X)	"[ "#_C" ]"BLK"[ F:%-08s M:%-04s L:%-03d T:%08X ]:>"BLK _X,__FILE__,__FUNCTION__,__LINE__,__THREADID__
-#define MLTFMT(_C, _X) 	"[ "#_C" ]"BLK"[ M:%-04s L:%-03d T:%08X ]:>"BLK _X,__FUNCTION__,__LINE__,__THREADID__
-#define MLFMT(_C, _X) 	"[ "#_C" ]"BLK"[ M:%-04s L:%-03d ]:>"BLK _X,__FUNCTION__,__LINE__
-#define LTFMT(_C, _X)  	"[ "#_C" ]"BLK"[ L:%-03d T:%08X ]:>"BLK _X,__LINE__,__THREADID__
-#define LFMT(_C, _X)   	"[ "#_C" ]"BLK"[ L:%-03d ]:>"BLK _X,__LINE__
-#define TFMT(_C, _X)   	"[ "#_C" ]"BLK"[ L:%08d ]:>"BLK _X,__THREADID__
+#if defined (_LUNIX) && !defined (__THREADID__)
+	#define __THREADID__  	pthread_self()
+#else
+	#define __THREADID__  	GetCurrentThreadId()
+#endif
+
+#define ALLFMT(_C, _X)	"[ " #_C " ]" BLK "[ F:%-08s M:%-04s L:%-03d T:%08X ]:>" BLK _X,__FILE__,__FUNCTION__,__LINE__,__THREADID__
+#define MLTFMT(_C, _X) 	"[ " #_C " ]" BLK "[ M:%-04s L:%-03d T:%08X ]:>" BLK _X,__FUNCTION__,__LINE__,__THREADID__
+#define MLFMT(_C, _X) 	"[ " #_C " ]" BLK "[ M:%-04s L:%-03d ]:>" BLK _X,__FUNCTION__,__LINE__
+#define LTFMT(_C, _X)  	"[ " #_C " ]" BLK "[ L:%-03d T:%08X ]:>" BLK _X,__LINE__,__THREADID__
+#define LFMT(_C, _X)   	"[ " #_C " ]" BLK "[ L:%-03d ]:>" BLK _X,__LINE__
+#define TFMT(_C, _X)   	"[ " #_C " ]" BLK "[ L:%08d ]:>" BLK _X,__THREADID__
 //set the each conf
 #define SET(_C,_X)			set(_C,#_X)
 //append the path,if need
@@ -45,6 +68,16 @@ typedef std::map <std::string, std::string> strm;
 	 _lconf.LOGPATH.append("/");
 */
 #define APPEND(_C,_X) ( (_C).substr((_C).size()-1) != (_X) ) ? _C.append((_X)) : _C
+
+//If it is a relative path into an absolute path and append "/"
+/*
+	if((_lconf.LOGPATH).find(".") >= 0)
+	{
+		getapath(_lconf.LOGPATH);
+	}
+	APPEND(_lconf.LOGPATH,"/")
+*/
+#define GETAPATH(_C,_X) ( ((_C).find(".") >= 0) ? APPEND(getapath((_C)),(_X)): APPEND(_C,_X) )
 /* 
 bool logenv = true;
    #define DEBUG ((logenv)?(logenv=false,(__LINE__)<<3,LOG_DEBUG):

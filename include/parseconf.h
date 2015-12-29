@@ -7,6 +7,7 @@
 #include <map>
 #include <ctype.h>
 #include <cstdlib>
+#include <dirent.h>
 #include <typeinfo>
 #include "Mdef.h"
 #include "confdata.h"
