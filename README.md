@@ -8,4 +8,31 @@ The log system is a oriented class system ,As a base template class ,as the clas
 ##log file
 The log file is update or recreate when the file's size is bigger than the DEFAULT_LFSIZE(=default log file size ,you set in etc/logsys.conf). The filename is module+time-tip+suffix(.log) ,the time-tip is create time.
 ##log system DS(directory structure)
-![logsys.png](https://bitbucket.org/repo/M4bjKr/images/1004508629-logsys.png)
+- etc
+ - logsys.conf -- ***The configuration file of the  log system***
+ - sample.conf -- ***The test configuration file of the parseconf ***
+- include
+ - Basethread.cpp/h -- ***Base of thread***
+ - confdata.cpp/h -- ***The data of configuration of log system***
+ - filedata.cpp/h -- ***The log file list dealwith***
+ - lmutex.cpp/h -- ***The log system mutex to make r/w safely***
+ - log_T.cpp/h -- ***The log system write here***
+ - lthread.cpp/h -- ***The check(log file's size and numbers) thread***
+ - parseconf.cpp/h -- ***parse the log configuration***
+ - Mdef.h -- ***some important marco***
+- log
+- makefile -- ***makefile get logsys.so or logsys.a***
+- README.md
+- src
+ - log_main.cpp -- ***test the log system program***
+ - log_thread.cpp -- ***test the log system program with multi-threads***
+- test -- ***some test program when write the system, is not the part of this project***
+ - format.c getlist.cpp getpath.cpp lthread.cpp parconf.c parseconf.cpp 
+ - tm.c, 逗号表达式.txt, 可变参数.cpp, 可变参数函数的多级调用.cpp
+ - thread
+    - Basethread.cpp Basethread.h
+    - lmutex.cpp lmutex.h
+    - test.cpp
+
+
+6 directories, 36 files
