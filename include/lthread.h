@@ -13,13 +13,13 @@
 #include "confdata.h"
 #include "lmutex.h"
 #include "filedata.h"
-//#include "Mdef.h"
 using namespace std;
 class lthread:public Basethread
 {
 
 	private:
 		bool renameflag;
+		bool breakflag;
 		logconf _conf;
 		lmutex* _logfmutex;
 		filedata* _filedata;
@@ -28,7 +28,6 @@ class lthread:public Basethread
 		lthread(logconf& conf);
 		lthread(const lthread &);
 		lthread& operator = (const lthread &);
-		/*
 		class CGarbo   //它的唯一工作就是delete _linstance
 		{
 			public:
@@ -36,14 +35,14 @@ class lthread:public Basethread
 				{
 					if(lthread::_linstance)
 					{
+						(lthread::_linstance)->freedata();
+						cout << "log thread will deading" << endl;
 						delete lthread::_linstance;
 						lthread::_linstance = NULL;
-						cout << "log thread will deading " << endl;
 					}
 				}
 		};
-		class CGarbo garbo;
-		*/
+		static CGarbo garbo;
 	public:
 		static lthread* getlthread(logconf& conf);
 		friend class logT;
@@ -52,6 +51,7 @@ class lthread:public Basethread
 		float getfsize(FSU& fsu);
 		bool checkffull();
 		bool checklogfnum(string logpath);
+		void freedata();
 };
 
 #endif

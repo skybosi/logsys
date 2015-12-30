@@ -11,12 +11,21 @@ class test
 			(*log)(LDEBUG,ALLFMT(test,"aaaaaa"));
 			cout << "test show";
 		}
+		~test()
+		{
+			if(log)
+			{
+				delete log;
+				log = NULL;
+			}
+		}
 	public:
 		logT* log;
 };
 test::test()
 {
-	log = new logT("/home/dejian.fei/myspace/git/logsys/etc/logsys.conf");
+	//log = new logT("/home/dejian.fei/myspace/git/logsys/etc/logsys.conf");
+	log = new logT("./etc/logsys.conf");
 }
 int main(int argc,char** argv)
 {
@@ -26,7 +35,6 @@ int main(int argc,char** argv)
 		return 0;
 	}
 	test a;
-	test b;
 	int nums = 0;
 	int threads = atoi(argv[1]);
 	pthread_t pth[threads];
@@ -46,6 +54,7 @@ int main(int argc,char** argv)
 	{
 		a.show(); 
 	}
+	pthread_attr_destroy(&attr); 
 	return 0;
 }
 void *plog(void *arg)

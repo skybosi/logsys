@@ -43,3 +43,7 @@ inline void *Basethread::runhere(void *args)
 	th->run();
 	return (void *)0;
 }
+pthread_t Basethread::gethreadid()
+{
+	return pth[_curthreadnum];
+}

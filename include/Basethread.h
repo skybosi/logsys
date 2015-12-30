@@ -48,6 +48,7 @@ class Basethread
 	}
 	bool start();
 	virtual int run() = 0;
+	pthread_t gethreadid();
 };
 
 #endif

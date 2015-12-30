@@ -1,19 +1,16 @@
 #include "lthread.h"
 
-// lthread::lthread(string& logpath, long
-// maxfsize):Basethread(1),_flogpath(logpath),
-// _maxfsize(maxfsize),renameflag(false)
-lthread::lthread(logconf & conf):Basethread(1), _conf(conf), renameflag(false)
+lthread::lthread(logconf & conf):Basethread(1), _conf(conf), renameflag(false),breakflag(false)
 {
 	cout << "log thread is coming..." << endl;
 	_logfmutex = new lmutex();
 	_filedata = new filedata(_conf);
 }
-
-//lthread *lthread::_linstance = NULL;
+lthread::CGarbo lthread::garbo;
+lthread *lthread::_linstance = NULL;
 lthread *lthread::getlthread(logconf & conf)
 {
-	static lthread *_linstance;
+//	static lthread *_linstance;
 	if (_linstance == NULL)		// 判断是否第一次调用
 	{
 		_linstance = new lthread(conf);
@@ -40,16 +37,19 @@ int lthread::run()
 		//checkffull();
 		if (_filedata->rmflag == false && _filedata->checkfname())
 			_filedata->deloldfile();
+		if(breakflag)
+		{
+			cout << breakflag << " is true lthread" << endl;
+			break;
+		}
 		_logfmutex->setunlock();
 	}
 	return 0;
 }
 
-
 // check the log file's size
 bool lthread::checkffull()
 {
-	cout << "我来了" << endl;
 	float fsize = getfsize(_conf.FSUNIT);
 	if (renameflag == false && fsize >= _conf.LOGFSIZE)
 	{
@@ -61,6 +61,20 @@ bool lthread::checkffull()
 		renameflag = false;
 	}
 	return renameflag;
+}
+//free data
+void lthread::freedata()
+{
+	if(_logfmutex)
+	{
+		delete _logfmutex;
+		_logfmutex = NULL;
+	}
+	if(_filedata)
+	{
+		delete _filedata;
+		_filedata = NULL;
+	}
 }
 
 // get the size of log file

@@ -12,7 +12,6 @@ logT::logT(string parsefpath):_parsefpath(parsefpath)
 	//_logmutex = new lmutex();
 	setlconf();
 	_curlfname = _conf.FULLPATH;
-	//_checklthread = new lthread(_conf);
 	_checklthread = lthread::getlthread(_conf);
 	_checklthread->start();
 	//_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
@@ -30,8 +29,8 @@ logT::~logT()
 	cout << "logT will dead" << endl;
 	// if(_logmutex)
 	//	delete _logmutex;
-	delete _checklthread;
-	_checklthread = NULL;
+	_checklthread->breakflag = true;//break the check loop
+	pthread_cancel(_checklthread->gethreadid());
 	if (_logfile)
 	{
 		cout << "log file will close...." << endl;
@@ -64,7 +63,7 @@ bool logT::relname()
 			cerr << "relname: open log file error!" << endl;
 			exit(1);
 		}
-		//_logfile <<"===" << newfname << "===" << endl;
+		_logfile <<"===" << newfname << "===" << endl;
 		return true;
 	}
 	else
@@ -78,7 +77,7 @@ void logT::writeL(int loghere, string classname, const char *lformat, ...)
 {
 	//_logmutex->setlock();
 	_checklthread->_logfmutex->setlock();
-	//if(_checklthread->renameflag == false)
+	if(_checklthread->renameflag == false)
 	{
 		if(_checklthread->checkffull())
 		{
@@ -216,8 +215,7 @@ static string getime(bool chose)
 {
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
-	struct tm *ptm = localtime(&tv.tv_sec);	// 将秒转换成struct
-	// tm的形式
+	struct tm *ptm = localtime(&tv.tv_sec);	// 将秒转换成struct tm的形式
 	char curtime[64];
 	memset(&curtime, 0, sizeof(curtime));
 	if (chose)

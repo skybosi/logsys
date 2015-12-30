@@ -2,13 +2,16 @@
 #include "filedata.h"
 filedata::filedata(logconf& conf):_conf(conf),rmflag(false)
 {
+	cout << "filedata is comming!" << endl;
 }
 filedata::~filedata()
 {
+	cout << "filedata is will dead!" << endl;
+	std::vector<lsfile_t>().swap(_files);
+	std::vector<lsfile_t>().swap(_delfiles);
 }
 int filedata::getlflist(const char *dir,const char *ptfname)
 {
-	cout << "hhhhhhhhhhhhhh: "<< dir << BLK << ptfname<< endl;
 	DIR *dp;
 	struct dirent *entry;
 	struct stat statbuf;
@@ -57,8 +60,8 @@ bool filedata::checkfname()
 	int delfnum = size - _conf.DEFAULT_LNUM;
 	showalll(_files);
 	cout << "filedata size: " << size << endl;
-	cout << "哈哈哈: " << rmflag << " delfnum :"<< delfnum << endl;
-	if(delfnum > 0)
+	cout << "rmflag: " << rmflag << " delfnum: "<< delfnum << endl;
+	if(++delfnum >= 0)
 	{
 		std::sort(_files.begin(),_files.end(),sortbyfilename); 
 		showalll(_files);
@@ -69,7 +72,6 @@ bool filedata::checkfname()
 			{
 				int fpos = _files.size()-1;
 				tmp = _files.at(fpos);
-				cout << "tmp file:" << tmp.purefname_t << endl;
 				_delfiles.push_back(tmp);
 				_files.pop_back();
 			}
@@ -86,10 +88,9 @@ bool filedata::checkfname()
 bool filedata::deloldfile()
 {
 	//showalll(_delfiles);
-	//sleep(10);
 	int delOk = 0;
 	int delfnum = _delfiles.size();
-	cout << "delfnum :" << delfnum << endl;
+	//cout << "delfnum :" << delfnum << endl;
 	for(int i = 0; i < delfnum; i++)
 	{
 		if (remove(_delfiles[i].fullfname_t.c_str()) == 0)
@@ -118,11 +119,10 @@ bool filedata::findafile(string& tfile)
 		cout << "_files list is 空"<< endl;
 		return true;
 	}
-	cout << "new szie: " << _files.size() << endl;
+	//cout << "new szie: " << _files.size() << endl;
 	vector<lsfile_t>::iterator iter = _files.begin();
 	for(;iter != _files.end(); iter++)
 	{
-//		cout << "_file list:"  << iter->purefname_t << endl;
 		if(tfile == iter->purefname_t)
 		{
 			return false;
@@ -130,7 +130,7 @@ bool filedata::findafile(string& tfile)
 	}
 	if(iter == _files.end())
 	{
-		cout << "new tfile1:" <<"[" << tfile << "]"<< endl;
+		//cout << "new tfile1:" <<"[" << tfile << "]"<< endl;
 		return true;
 	}
 	else
@@ -140,7 +140,7 @@ bool filedata::findafile(string& tfile)
 void filedata::showalll(vector < lsfile_t > files) const
 {
 	int size = files.size();
-	cout << "showalll size: " << size << endl;
+	//cout << "showalll size: " << size << endl;
 	for (int i = 0; i < size; i++)
 	{
 		cout << "path        : " << files[i].paths << endl;

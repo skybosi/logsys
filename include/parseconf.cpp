@@ -24,7 +24,6 @@ bool parseconf::parse_conf()
 }
 string& getapath(string& rpath)
 {
-		cout << "kkkkkkkkkkLOGPATH: " << rpath << endl;
 	char bakpath[PATH_MAX] = {0};
 	char abspath[PATH_MAX] = {0};
 	getcwd(bakpath,PATH_MAX);
@@ -38,7 +37,6 @@ string& getapath(string& rpath)
 		cout << rpath << ": curpath is error!" << endl;
 		cout << bakpath << ": bakpath is error!" << endl;
 		cout << abspath << ": abspath is error!" << endl;
-	//	strcpy(abspath,bakpath);
 		rpath = bakpath;
 	}
 	return rpath;
@@ -61,7 +59,7 @@ void parseconf::setconf()
 	SET(_lconf.LOGFSIZE, LOGFSIZE);
 	
 	_lconf.FULLPATH = _lconf.LOGPATH + _lconf.LOGFNAME + ".log";
-	cout << _lconf;
+	//cout << _lconf;
 }
 
 // a series of set function for set the configuration 
@@ -88,7 +86,6 @@ bool parseconf::set(long &key, string keyname)
 		if(keyname == "LOGFSIZE")
 		{
 			char unit = (pos->second).at((pos->second).size() - 1);
-			cout << "FSUNIT :" << unit << endl;
 			if (unit == 'B' || unit == 'b')
 				_lconf.FSUNIT = BYTE;
 			else if(unit == 'K' || unit == 'k')
