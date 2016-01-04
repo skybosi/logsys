@@ -26,6 +26,7 @@ class parseconf
 		bool set(INT & key, string keyname);
 		bool set(LONG & key, string keyname);
 		bool set(DOBL & key, string keyname);
+		bool set(FLOT & key, string keyname);
 		bool set(string & key, string keyname);
 	public:
 		parseconf(string path);

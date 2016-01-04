@@ -53,17 +53,23 @@ bool logT::relname()
 	_logfile.close();
 	int len = _curlfname.size();
 	string oldpath = _curlfname;
-	string newfname = delsuffix(oldpath) + getime(false) + LSUFFIX;
-	if (rename(_curlfname.c_str(), newfname.c_str()) == 0)
+	//string newfname = delsuffix(oldpath) + getime(false) + LSUFFIX;
+	_newlogf.paths = _conf.LOGPATH;
+	_newlogf.purefname_t = _conf.LOGFNAME + getime(false) + LSUFFIX;
+	_newlogf.fullfname_t = _conf.LOGPATH + _newlogf.purefname_t;
+	if ( 0 == rename(_curlfname.c_str(), (_newlogf.fullfname_t).c_str()) )
 	{
-		printf("Renamed %s to %s\n",_curlfname.c_str(), newfname.c_str());
+		printf("Renamed %s to %s\n",_curlfname.c_str(), (_newlogf.fullfname_t).c_str());
 		_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
 		if (!_logfile)
 		{
 			cerr << "relname: open log file error!" << endl;
 			exit(1);
 		}
-		_logfile <<"===" << newfname << "===" << endl;
+		else
+		{
+			cout << "open the file: " << _curlfname << endl;
+		}
 		return true;
 	}
 	else
@@ -73,7 +79,7 @@ bool logT::relname()
 	}
 }
 //write log
-void logT::writeL(int loghere, string classname, const char *lformat, ...)
+void logT::writeL(int loghere, const char *lformat, ...)
 {
 	//_logmutex->setlock();
 	_checklthread->_logfmutex->setlock();
@@ -83,30 +89,27 @@ void logT::writeL(int loghere, string classname, const char *lformat, ...)
 		{
 			if(relname())
 			{
+				_checklthread->_filedata->addnewfile(_newlogf);
 				_checklthread->renameflag = false;
 			}
 		}
 	}
-	_classname = classname;
 	_lognum = loghere & 7;		// get logtype
 	_line = loghere >> 3;		// get log line
 	if (_lognum <= _conf.DEFAULT_LEVEL)
 	{
+		_logfile << getime(true) << BLK;
+		_logfile << llev2str() << BLK;
+		//	_logfile << _line << BLK;
 		va_list st;
 		va_start(st, lformat);
-		_logfile << getime(true) << BLK;
-		_logfile << "[ " << _classname << " ]" << BLK;
-		_logfile << llev2str() << BLK;
-		_logfile << _line << BLK;
 		_strlog = lfmt(st, lformat);
-		_logfile << _strlog << endl;
-
 		cout << "line:" << _line << BLK;
 		cout << _strlog << endl;
+		_logfile << _strlog << endl;
 	}
 	//_logmutex->setunlock();
 	_checklthread->_logfmutex->setunlock();
-
 }
 //write log with operator()
 void logT::operator()(int loghere,const char *lformat,...)
@@ -114,13 +117,14 @@ void logT::operator()(int loghere,const char *lformat,...)
 	_checklthread->_logfmutex->setlock();
 	if(_checklthread->renameflag == false)
 	{
-		if(_checklthread->checkffull())
+	if(_checklthread->checkffull())
+	{
+		if(relname())
 		{
-			if(relname())
-			{
-				_checklthread->renameflag = false;
-			}
+			_checklthread->_filedata->addnewfile(_newlogf);
+			_checklthread->renameflag = false;
 		}
+	}
 	}
 	_lognum = loghere & 7;		// get logtype
 	_line = loghere >> 3;		// get log line

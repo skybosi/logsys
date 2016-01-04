@@ -59,11 +59,11 @@ void parseconf::setconf()
 	SET(_lconf.LOGFSIZE, LOGFSIZE);
 	
 	_lconf.FULLPATH = _lconf.LOGPATH + _lconf.LOGFNAME + ".log";
-	//cout << _lconf;
+	cout << _lconf;
 }
 
 // a series of set function for set the configuration 
-bool parseconf::set(int &key, string keyname)
+bool parseconf::set(INT &key, string keyname)
 {
 	strm::iterator pos;
 	pos = _kws.find(keyname);
@@ -76,13 +76,25 @@ bool parseconf::set(int &key, string keyname)
 		return false;
 }
 
-bool parseconf::set(long &key, string keyname)
+bool parseconf::set(LONG &key, string keyname)
 {
 	strm::iterator pos;
 	pos = _kws.find(keyname);
 	if (pos != _kws.end())
 	{
 		key = atol((pos->second).c_str());
+		return true;
+	}
+	else
+		return false;
+}
+bool parseconf::set(FLOT &key, string keyname)
+{
+	strm::iterator pos;
+	pos = _kws.find(keyname);
+	if (pos != _kws.end())
+	{
+		key = atof((pos->second).c_str());
 		if(keyname == "LOGFSIZE")
 		{
 			char unit = (pos->second).at((pos->second).size() - 1);
@@ -101,7 +113,7 @@ bool parseconf::set(long &key, string keyname)
 		return false;
 }
 
-bool parseconf::set(double &key, string keyname)
+bool parseconf::set(DOBL &key, string keyname)
 {
 	strm::iterator pos;
 	pos = _kws.find(keyname);

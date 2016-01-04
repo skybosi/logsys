@@ -7,8 +7,6 @@ filedata::filedata(logconf& conf):_conf(conf),rmflag(false)
 filedata::~filedata()
 {
 	cout << "filedata is will dead!" << endl;
-	std::vector<lsfile_t>().swap(_files);
-	std::vector<lsfile_t>().swap(_delfiles);
 }
 int filedata::getlflist(const char *dir,const char *ptfname)
 {
@@ -37,13 +35,9 @@ int filedata::getlflist(const char *dir,const char *ptfname)
 			filelist.purefname_t = entry->d_name;
 			filelist.fullfname_t = filelist.paths + 
 				filelist.purefname_t;
-			filelist.laccess_t = statbuf.st_atime; 
-			filelist.lmodify_t = statbuf.st_mtime; 
-			filelist.lstatus_t = statbuf.st_ctime; 
-			if ((filelist.purefname_t.find(ptfname) == 0) && 
-					 findafile(filelist.purefname_t))
+			if ( 0 == filelist.purefname_t.find(ptfname) )
 			{
-					_files.push_back(filelist);
+				_files.push_back(filelist);
 			}
 		}
 	}
@@ -51,104 +45,74 @@ int filedata::getlflist(const char *dir,const char *ptfname)
 	closedir(dp);
 	return _files.size();
 }
-bool filedata::checkfname()
+//init the deque of a log file list
+bool filedata::init_files()
 {
-	cout << "enter check file numbers: " << endl;
+	cout << "enter init flies list: " << endl;
 	string dir = _conf.LOGPATH;
 	string patfile = _conf.LOGFNAME + "_";
 	int size = getlflist(dir.c_str(),patfile.c_str()); // 不包含 _conf.LOGFNAME的log文件
-	int delfnum = size - _conf.DEFAULT_LNUM;
 	showalll(_files);
-	cout << "filedata size: " << size << endl;
-	cout << "rmflag: " << rmflag << " delfnum: "<< delfnum << endl;
-	if(++delfnum >= 0)
+	std::sort(_files.begin(),_files.end(),sortbyfilename);//保证初始化file队列的文件名是有序的（升序）
+	showalll(_files);
+	int delfnum = size - _conf.DEFAULT_LNUM;
+	if( delfnum > 0 )
 	{
-		std::sort(_files.begin(),_files.end(),sortbyfilename); 
-		showalll(_files);
-		lsfile_t tmp;
-		if(rmflag == false)
+		while(delfnum--)
+			_files.pop_front();
+	}
+	cout << "leave init flies list: " << endl;
+}
+bool filedata::checkfname()
+{
+	cout << "enter check file numbers: " << endl;
+	int delfnum = _files.size() - _conf.DEFAULT_LNUM;
+	cout << "list size: " << _files.size() <<" delfnum: "  << delfnum << endl;
+	showalll(_files);
+	if( delfnum > 0 )
+	{
+		while(delfnum--)
 		{
-			while(delfnum--)
+			lsfile_t tmp = _files.front();
+			if (remove(tmp.fullfname_t.c_str()) == 0)
 			{
-				int fpos = _files.size()-1;
-				tmp = _files.at(fpos);
-				_delfiles.push_back(tmp);
-				_files.pop_back();
+				printf("%s will be delete\n",tmp.fullfname_t.c_str());
 			}
-			rmflag = true;
+			else
+			{
+				perror("Remove");
+			}
+			_files.pop_front();
 		}
-	}
-	else
-		rmflag = false;
-	//std::vector<lsfile_t>().swap(_files);
-	//_files.clear();
-	return rmflag;
-}
-
-bool filedata::deloldfile()
-{
-	//showalll(_delfiles);
-	int delOk = 0;
-	int delfnum = _delfiles.size();
-	//cout << "delfnum :" << delfnum << endl;
-	for(int i = 0; i < delfnum; i++)
-	{
-		if (remove(_delfiles[i].fullfname_t.c_str()) == 0)
-		{
-			delOk++;
-			printf("%s will be delete\n",_delfiles[i].fullfname_t.c_str());
-		}
-		else
-		{
-			perror("Remove");
-		}
-	}
-	if(delOk != delfnum)
 		rmflag = true;
+	}
 	else
 		rmflag = false;
-	std::vector<lsfile_t>().swap(_delfiles);
-	//_delfiles.clear();
+	cout << "leave check file numbers: " << endl;
 	return rmflag;
 }
-
-bool filedata::findafile(string& tfile)
+bool filedata::addnewfile(lsfile_t& newlogf)
 {
-	if(_files.empty())
+	if(& newlogf)
 	{
-		cout << "_files list is 空"<< endl;
-		return true;
-	}
-	//cout << "new szie: " << _files.size() << endl;
-	vector<lsfile_t>::iterator iter = _files.begin();
-	for(;iter != _files.end(); iter++)
-	{
-		if(tfile == iter->purefname_t)
-		{
-			return false;
-		}
-	}
-	if(iter == _files.end())
-	{
-		//cout << "new tfile1:" <<"[" << tfile << "]"<< endl;
+		_files.push_back(newlogf);
+		cout << newlogf.fullfname_t << "enter the list!" << endl;
 		return true;
 	}
 	else
+	{
 		return false;
+	}
 }
-
-void filedata::showalll(vector < lsfile_t > files) const
+void filedata::showalll(deque < lsfile_t > files) const
 {
 	int size = files.size();
-	//cout << "showalll size: " << size << endl;
+	cout << "showalll size: " << size << endl;
 	for (int i = 0; i < size; i++)
 	{
 		cout << "path        : " << files[i].paths << endl;
 		cout << "purefname_t : " << files[i].purefname_t  << endl;
 		cout << "fullfname_t : " << files[i].fullfname_t  << endl;
-		cout << "lmodify_t   : " << files[i].lmodify_t << endl;
-		cout << "laccess_t   : " << files[i].laccess_t << endl;
-		cout << "lstatus_t   : " << files[i].lstatus_t << endl;
 	}
 }
 
@@ -167,22 +131,8 @@ string & filedata::delsuffix(string & filepath)
 
 bool filedata::sortbyfilename( const lsfile_t &v1, const lsfile_t &v2)  
 {  
-	return v1.purefname_t > v2.purefname_t; //up sort
+	return v1.purefname_t < v2.purefname_t; //up sort
 }  
-bool filedata::sortbyaccess( const lsfile_t &v1, const lsfile_t &v2)  
-{  
-	return v1.laccess_t > v2.laccess_t; //up sort
-}  
-bool filedata::sortbymodify( const lsfile_t &v1, const lsfile_t &v2)  
-{  
-	return v1.lmodify_t > v2.lmodify_t; //up sort
-}  
-bool filedata::sortbystatus( const lsfile_t &v1, const lsfile_t &v2)  
-{  
-	return v1.lstatus_t > v2.lstatus_t; //up sort
-}  
-
-
 /*
 	 int main()
 	 {

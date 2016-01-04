@@ -31,12 +31,13 @@ lthread *lthread::getlthread(logconf & conf)
 	 */
 int lthread::run()
 {
+	_filedata->init_files();
 	while (1)
 	{
 		_logfmutex->setlock();
 		//checkffull();
-		if (_filedata->rmflag == false && _filedata->checkfname())
-			_filedata->deloldfile();
+		if (_filedata->checkfname())
+			_filedata->rmflag = false;
 		if(breakflag)
 		{
 			cout << breakflag << " is true lthread" << endl;
@@ -77,6 +78,16 @@ void lthread::freedata()
 	}
 }
 
+bool lthread::addnewf(lsfile_t& newlogf)
+{
+	if(& newlogf)
+	{
+		_filedata->addnewfile(newlogf);
+		return true;
+	}
+	else
+		return false;
+}
 // get the size of log file
 float lthread::getfsize(FSU& fsu)
 {

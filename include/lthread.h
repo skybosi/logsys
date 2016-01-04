@@ -12,6 +12,7 @@
 #include "Basethread.h"
 #include "confdata.h"
 #include "lmutex.h"
+#include "Mdef.h"
 #include "filedata.h"
 using namespace std;
 class lthread:public Basethread
@@ -51,6 +52,7 @@ class lthread:public Basethread
 		float getfsize(FSU& fsu);
 		bool checkffull();
 		bool checklogfnum(string logpath);
+		bool addnewf(lsfile_t& newlogf);
 		void freedata();
 };
 

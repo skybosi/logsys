@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <map>
-
+using namespace std;
 enum log_level
 {
 	LOG_CORE = 0,
@@ -20,6 +20,17 @@ typedef enum fsizeunit
 	KB,
 	MB,
 }FSU;
+
+typedef struct lsfile
+{
+	string paths;
+	string purefname_t;
+	string fullfname_t;
+//	time_t lmodify_t;
+//	time_t laccess_t;
+//	time_t lstatus_t;
+}lsfile_t;
+
 //operator system
 #if defined (__linux) || defined (__linux__) || defined (__unix__) || defined (__unix)
 	#define _LUNIX
@@ -35,6 +46,7 @@ typedef std::map <std::string, std::string> strm;
 #define INT  int
 #define LONG long
 #define DOBL double
+#define FLOT float
 //path separator
 #ifdef _LUNIX
 	#define PATHSEP "/"

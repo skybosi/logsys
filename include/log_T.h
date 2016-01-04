@@ -27,6 +27,7 @@ class logT
 		ofstream _logfile;
 		string _classname;
 		string _curlfname;			// current log's name with path
+		lsfile_t _newlogf;
 		string _parsefpath;     //parse file path
 //		friend class lthread;
 	private:
@@ -43,7 +44,7 @@ class logT
 		logT(string parsefpath);
 //		logT(const char* parsefpath){};
 		~logT();
-		void writeL(int logtype,string classname,const char *lformat, ...);
+		void writeL(int logtype,const char *lformat, ...);
 		void operator()(int loghere,const char *lformat,...);
 		string help() const;
 		void showall() const;

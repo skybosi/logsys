@@ -9,40 +9,29 @@
 #include <sys/stat.h>
 #include <cstring>
 #include <vector>
+#include <deque>
 #include <algorithm>
 #include "confdata.h"
+#include "Mdef.h"
 using namespace std;
 class filedata
 {
 	private:
-		typedef struct lsfile
-		{
-			string paths;
-			string purefname_t;
-			string fullfname_t;
-			time_t lmodify_t;
-			time_t laccess_t;
-			time_t lstatus_t;
-		}lsfile_t;
-		vector < lsfile_t > _files;
-		vector < lsfile_t > _delfiles;
+		deque < lsfile_t > _files;
 		logconf _conf;
 	private:
 		string & delsuffix(string & filepath);
 		static bool sortbyfilename( const lsfile_t &v1, const lsfile_t &v2);
-		static bool sortbyaccess( const lsfile_t &v1, const lsfile_t &v2);
-		static bool sortbymodify( const lsfile_t &v1, const lsfile_t &v2);
-		static bool sortbystatus( const lsfile_t &v1, const lsfile_t &v2);
-		bool findafile(string& tfile);
 	public:
 		bool rmflag;		//true:  delete go on;
 										//false: delete finish 
 		filedata(logconf& conf);
 		~filedata();
+		bool init_files();
 		int getlflist(const char *dir,const char *ptfname);
-		bool  checkfname();
-		bool deloldfile();
-		void showalll(vector < lsfile_t > files)const;
+		bool checkfname();
+		bool addnewfile(lsfile_t& newlogf);
+		void showalll(deque < lsfile_t > files)const;
 };
 
 #endif
