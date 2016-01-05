@@ -57,11 +57,37 @@ void parseconf::setconf()
 	SET(_lconf.LOGFNAME, LOGFNAME);
 	//set(_lconf.LOGFSIZE, STR(LOGFSIZE));
 	SET(_lconf.LOGFSIZE, LOGFSIZE);
-	
+	resetlsize();
+
 	_lconf.FULLPATH = _lconf.LOGPATH + _lconf.LOGFNAME + ".log";
 	cout << _lconf;
 }
-
+void parseconf::resetlsize()
+{
+	float& size = _lconf.LOGFSIZE;
+	switch(_lconf.FSUNIT)
+	{
+		case BYTE:
+			if( size < (SIZEBASE * 1024 *1024) 
+				|| size > (MAXSIZE * 1024 * 1024) )
+				size = SIZEBASE * 1024 * 1024.0;	
+			break;
+		case KB:
+			if( size < (SIZEBASE * 1024)
+				|| size > (MAXSIZE * 1024) )
+				size = SIZEBASE * 1024.0;	
+			break;
+		case MB:
+			if( size < (SIZEBASE) || size > (MAXSIZE) )
+				size = SIZEBASE;	
+			break;
+		default:
+			if( size < (SIZEBASE * 1024)
+				|| size > (MAXSIZE * 1024) )
+				size = SIZEBASE * 1024.0;	
+			break;
+	}
+}
 // a series of set function for set the configuration 
 bool parseconf::set(INT &key, string keyname)
 {
@@ -221,10 +247,10 @@ string & trim(string & s)
 	return s;
 }
 /*
-	 int main()
-	 {
-	 parseconf test2("./etc/logsys.conf");
-	 test2.parse_conf();
-	 return 0;
-	 }
-	 */
+   int main()
+   {
+   parseconf test2("./etc/logsys.conf");
+   test2.parse_conf();
+   return 0;
+   }
+ */

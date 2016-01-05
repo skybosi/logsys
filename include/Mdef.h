@@ -58,6 +58,8 @@ typedef std::map <std::string, std::string> strm;
 	#define PATH_MAX  4096
 #endif
 
+#define SIZEBASE 3
+#define MAXSIZE  10
 //log of format (F:file M:method L:line T:thread)
 #if defined (_LUNIX) && !defined (__THREADID__)
 	#define __THREADID__  	pthread_self()

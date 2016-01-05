@@ -4,7 +4,7 @@
 #second: use the lib to test the log system
 #
 INCLUDE=include
-SRC=src/log_thread.cpp
+SRC=src/log.cpp
 LIB=lib
 OBJ = Basethread.o confdata.o lmutex.o log_T.o filedata.o lthread.o parseconf.o	
 HEADERS = Basethread.h confdata.h lmutex.h log_T.h filedata.h lthread.h Mdef.h parseconf.h	

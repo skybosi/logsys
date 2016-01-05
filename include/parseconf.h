@@ -28,6 +28,7 @@ class parseconf
 		bool set(DOBL & key, string keyname);
 		bool set(FLOT & key, string keyname);
 		bool set(string & key, string keyname);
+		void resetlsize();
 	public:
 		parseconf(string path);
 		parseconf()
