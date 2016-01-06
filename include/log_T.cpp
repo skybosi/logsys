@@ -29,8 +29,9 @@ logT::~logT()
 	cout << "logT will dead" << endl;
 	// if(_logmutex)
 	//	delete _logmutex;
-	_checklthread->breakflag = true;//break the check loop
-	pthread_cancel(_checklthread->gethreadid());
+	_checklthread->breakflag = false;//break the check loop
+	cout << "_checklthread 被杀..." << endl;
+	_checklthread->join();
 	if (_logfile)
 	{
 		cout << "log file will close...." << endl;

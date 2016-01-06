@@ -1,6 +1,6 @@
 #include "lthread.h"
 
-lthread::lthread(logconf & conf):Basethread(1), _conf(conf), renameflag(false),breakflag(false)
+lthread::lthread(logconf & conf):Basethread(), _conf(conf), renameflag(false),breakflag(true)
 {
 	cout << "log thread is coming..." << endl;
 	_logfmutex = new lmutex();
@@ -32,17 +32,12 @@ lthread *lthread::getlthread(logconf & conf)
 int lthread::run()
 {
 	_filedata->init_files();
-	while (1)
+	while (breakflag)
 	{
 		_logfmutex->setlock();
 		//checkffull();
 		if (_filedata->checkfname())
 			_filedata->rmflag = false;
-		if(breakflag)
-		{
-			cout << breakflag << " is true lthread" << endl;
-			break;
-		}
 		_logfmutex->setunlock();
 	}
 	return 0;

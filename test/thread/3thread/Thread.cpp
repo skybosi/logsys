@@ -25,7 +25,8 @@ void Thread::Join() //等待线程执行结束并且收回被等待线程的资�
 
 void* Thread::ThreadRoutine(void* arg)//
 {
-	Thread* thread = static_cast<Thread*>(arg);//派生类指针转换成基类指针
+	//Thread* thread = static_cast<Thread*>(arg);//派生类指针转换成基类指针
+	Thread* thread = (Thread*)(arg);//派生类指针转换成基类指针
 	thread->Run();
 	if (thread->autoDelete_)
 		delete thread;

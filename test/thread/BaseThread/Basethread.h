@@ -11,21 +11,15 @@ class Basethread
 	private:
 		pthread_t pth;
 		bool autoDelete_;
-		bool _detach;
-		pthread_attr_t attr;
+//		pthread_attr_t attr;
 		static void *runhere(void *args);
 	public:
-		Basethread(bool detach);
 		Basethread();
 		void SetAutoDelete(bool autoDelete);
 		virtual ~Basethread()
 		{
 			cout << "Basethread will dead!" << endl;
-			if(_detach)
-			{
-				pthread_attr_destroy(&attr);
-				cout << "pthread attr will destroy!" << endl;
-			}
+	//		pthread_attr_destroy(&attr);
 		}
 		bool start();
 		void join();//等待线程结束并且收回被等待线程的资源
