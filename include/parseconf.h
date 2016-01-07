@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <dirent.h>
 #include <typeinfo>
+#include <fstream>
 #include "Mdef.h"
 #include "confdata.h"
 using namespace std;
@@ -19,6 +20,7 @@ class parseconf
 {
 	friend class logT;
 	private:
+		ofstream _default_config_file;
 		string _path;				// configuration file's path
 		ifstream _confile;			// configuration file's file stream
 		strm _kws;					// key-value with map
@@ -29,12 +31,10 @@ class parseconf
 		bool set(FLOT & key, string keyname);
 		bool set(string & key, string keyname);
 		void resetlsize();
+		bool create_config_file();
 	public:
 		parseconf(string path);
-		parseconf()
-		{
-			_path = "../etc/logsys.conf";
-		}
+		parseconf();
 		~parseconf()
 		{
 			cout << "confile will close..." << endl;

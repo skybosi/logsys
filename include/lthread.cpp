@@ -1,7 +1,9 @@
 #include "lthread.h"
 
-lthread::lthread(logconf & conf):Basethread(), _conf(conf), renameflag(false),breakflag(true)
+//lthread::lthread(logconf & conf):Basethread(), _conf(conf), renameflag(false),breakflag(true)
+lthread::lthread(logconf & conf):Basethread(), renameflag(false),breakflag(true)
 {
+	_conf = conf; 
 	cout << "log thread is coming..." << endl;
 	_logfmutex = new lmutex();
 	_filedata = new filedata(_conf);

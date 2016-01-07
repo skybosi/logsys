@@ -1,7 +1,9 @@
 #include <algorithm>
 #include "filedata.h"
-filedata::filedata(logconf& conf):_conf(conf),rmflag(false)
+//filedata::filedata(logconf& conf):_conf(conf),rmflag(false)
+filedata::filedata(logconf& conf):rmflag(false)
 {
+	_conf = conf;
 	cout << "filedata is comming!" << endl;
 }
 filedata::~filedata()

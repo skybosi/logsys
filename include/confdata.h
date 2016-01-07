@@ -1,10 +1,12 @@
 #ifndef _CONFDATA_H_
 #define _CONFDATA_H_
 #include "Mdef.h"
+#include <sstream>
 using namespace std;
 class logconf
 {
 	private:
+		ostringstream _default_conf;
 		INT DEFAULT_LEVEL;
 		INT MAX_LINE_LOG;
 		INT DEFAULT_LNUM;

@@ -49,19 +49,20 @@ int main(int argc,char** argv)
 			exit(1);
 		}
 	}
-	int i = 1000;
+	int i = 2;
 	while(i--)
 	{
 		a.show(); 
 	}
+	usleep(20);
 	pthread_attr_destroy(&attr); 
 	return 0;
 }
 void *plog(void *arg)
 {
 	test* a = (test*)arg;
-//	int i = 10000;
-	while(1)
+	int i = 2;
+	while(i--)
 	{
 		(*(a->log))(LERROR,ALLFMT(test,"bbbbbbbbbb"));
 	}

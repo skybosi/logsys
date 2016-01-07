@@ -11,14 +11,34 @@ parseconf::parseconf(string path):_path(path)
 	if (!_confile)
 	{
 		cerr << "parseconf open log file error!" << endl;
-		exit(1);
+		cout << "You config file is not exist,So will set default value." <<endl;
+		cout << "There are the default configuration is here: "<< endl;
+		cout << "(And will be create a sample configurate file at current path.)" << endl;
+		cout << _lconf;
 	}
+}
+parseconf::parseconf()
+{
+	cout << "You not configurate it,So will set default value." <<endl;
+	cout << "There are the default configuration is here: " << endl;
+	cout << "(And will be create a sample configurate file at current path.)" << endl;
+	cout << _lconf;
 }
 // parse the configuration file
 bool parseconf::parse_conf()
 {
 	if (!(this->getfkwtab()))
-		return false;
+	{
+		string sample_conf = _lconf.LOGPATH + "logsys_sample.conf";
+		_default_config_file.open(sample_conf.c_str(), ios::out | ios::binary);
+		if (!_default_config_file)
+		{
+			cerr << "Default config file: open log file error!" << endl;
+			exit(1);
+		}
+		_default_config_file << _lconf._default_conf.str();
+		_default_config_file.close();
+	}
 	setconf();
 	return true;
 }
@@ -59,7 +79,7 @@ void parseconf::setconf()
 	SET(_lconf.LOGFSIZE, LOGFSIZE);
 	resetlsize();
 
-	_lconf.FULLPATH = _lconf.LOGPATH + _lconf.LOGFNAME + ".log";
+	_lconf.FULLPATH = _lconf.LOGPATH + _lconf.LOGFNAME + LSUFFIX;
 	cout << _lconf;
 }
 void parseconf::resetlsize()
@@ -170,7 +190,9 @@ bool parseconf::set(string & key, string keyname)
 bool parseconf::getfkwtab()
 {
 	if (!_confile)
+	{
 		return false;
+	}
 	string line;
 	string key, value;
 	while (getline(_confile, line))
