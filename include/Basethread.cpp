@@ -5,6 +5,7 @@ Basethread::Basethread(bool detach):_detach(detach),autoDelete_(false)
 	cout << "Basethread is coming" << endl;
 	if(_detach)
 	{
+		cout << "open the detach state..." << endl;
 		pthread_attr_init(&attr);
 		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);	// 线程分离属性
 	}
@@ -14,6 +15,15 @@ Basethread::Basethread():_detach(false),autoDelete_(false)
 	cout << "Basethread is coming" << endl;
 }
 
+Basethread::~Basethread()
+{
+	if(_detach)
+	{
+		pthread_attr_destroy(&attr);
+		cout << "destroy the detach state..." << endl;
+	}
+	cout << "Basethread will dead!" << endl;
+}
 bool Basethread::start()
 {
 	int status = 0;
@@ -57,4 +67,7 @@ void Basethread::SetAutoDelete(bool autoDelete)
 {
 	autoDelete_ = autoDelete;
 }
-
+bool Basethread::getdetachstate()
+{
+	return _detach;
+}

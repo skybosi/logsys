@@ -45,7 +45,10 @@ int main(void)
 	TestThread* t2 = new TestThread(5);
 //	t2->SetAutoDelete(true);
 	t2->start();
-	t2->join();
+	if(t2->getdetachstate())
+		sleep(1);
+	else
+		t2->join();
 	delete t2;
 	return 0;
 }

@@ -31,7 +31,10 @@ logT::~logT()
 	//	delete _logmutex;
 	_checklthread->breakflag = false;//break the check loop
 	cout << "_checklthread 被杀..." << endl;
-	_checklthread->join();
+	if(_checklthread->getdetachstate()) //detach state open
+		sleep(1);
+	else
+		_checklthread->join();
 	if (_logfile)
 	{
 		cout << "log file will close...." << endl;

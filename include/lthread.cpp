@@ -1,7 +1,7 @@
 #include "lthread.h"
 
 //lthread::lthread(logconf & conf):Basethread(), _conf(conf), renameflag(false),breakflag(true)
-lthread::lthread(logconf & conf):Basethread(), renameflag(false),breakflag(true)
+lthread::lthread(logconf & conf):Basethread(true), renameflag(false),breakflag(true)
 {
 	_conf = conf; 
 	cout << "log thread is coming..." << endl;
@@ -100,15 +100,15 @@ float lthread::getfsize(FSU& fsu)
 			break;
 		case KB:
 			fsize /= 1024;
-			cout << "log file size: " << fsize << " Kb" << endl;
+			cout << "log file size: " << fsize << " KB" << endl;
 			break;
 		case MB:
 			fsize /= (1024 * 1024);
-			cout << "log file size: " << fsize << " Mb" << endl;
+			cout << "log file size: " << fsize << " MB" << endl;
 			break;
-		default://KB
-			fsize /= 1024;
-			cout << "log file size: " << fsize << " Kb" << endl;
+		default://MB
+			fsize /= (1024 * 1024);
+			cout << "log file size: " << fsize << " MB" << endl;
 			break;
 	}
 	return fsize;

@@ -18,19 +18,20 @@ class Basethread
 		Basethread(bool detach);
 		Basethread();
 		void SetAutoDelete(bool autoDelete);
-		virtual ~Basethread()
-		{
-			cout << "Basethread will dead!" << endl;
+		virtual ~Basethread();
+		/*{
 			if(_detach)
 			{
 				pthread_attr_destroy(&attr);
-				cout << "pthread attr will destroy!" << endl;
+				cout << "destroy the detach state..." << endl;
 			}
-		}
+			cout << "Basethread will dead!" << endl;
+		}*/
 		bool start();
 		void join();//等待线程结束并且收回被等待线程的资源
 		virtual int run() = 0;
 		pthread_t gethreadid();
+		bool getdetachstate();
 };
 
 #endif
