@@ -1,7 +1,7 @@
 #include "lthread.h"
 
-//lthread::lthread(logconf & conf):Basethread(), _conf(conf), renameflag(false),breakflag(true)
-lthread::lthread(logconf & conf):Basethread(true), renameflag(false),breakflag(true)
+lthread::lthread(logconf & conf):Basethread(), renameflag(false),breakflag(true)
+//lthread::lthread(logconf & conf):Basethread(true), renameflag(false),breakflag(true)
 {
 	_conf = conf; 
 	cout << "log thread is coming..." << endl;
@@ -42,6 +42,8 @@ int lthread::run()
 			_filedata->rmflag = false;
 		_logfmutex->setunlock();
 	}
+	breakflag = true;
+	//use to notify the main thread it's will dead
 	return 0;
 }
 

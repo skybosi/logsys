@@ -26,20 +26,25 @@ logT::logT(string parsefpath):_parsefpath(parsefpath)
 
 logT::~logT()
 {
-	cout << "logT will dead" << endl;
 	// if(_logmutex)
 	//	delete _logmutex;
 	_checklthread->breakflag = false;//break the check loop
-	cout << "_checklthread 被杀..." << endl;
 	if(_checklthread->getdetachstate()) //detach state open
-		sleep(1);
+	{
+		while(!_checklthread->breakflag);
+		cout << "at detach state: _checklthread 被杀..." << endl;
+	}
 	else
+	{
 		_checklthread->join();
+		cout << "at joined state: _checklthread 被杀..." << endl;
+	}
 	if (_logfile)
 	{
 		cout << "log file will close...." << endl;
 		_logfile.close();
 	}
+	cout << "logT will dead" << endl;
 }
 //set the configuration
 void logT::setlconf()
