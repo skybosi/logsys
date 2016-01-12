@@ -85,13 +85,13 @@ typedef std::map <std::string, std::string> strm;
 
 //If it is a relative path into an absolute path and append "/"
 /*
-	if((_lconf.LOGPATH).find(".") >= 0)
+	if((_lconf.LOGPATH).find(".") == 0)
 	{
 		getapath(_lconf.LOGPATH);
 	}
 	APPEND(_lconf.LOGPATH,"/")
 */
-#define GETAPATH(_C,_X) ( ((_C).find(".") >= 0) ? APPEND(getapath((_C)),(_X)): APPEND(_C,_X) )
+#define GETAPATH(_C,_X) ( ((_C).find(".") == 0) ? APPEND(getapath((_C)),(_X)): APPEND(_C,_X) )
 /* 
 bool logenv = true;
    #define DEBUG ((logenv)?(logenv=false,(__LINE__)<<3,LOG_DEBUG):

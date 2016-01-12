@@ -9,7 +9,7 @@ int main()
 	char bakbuf[80];
 	char absbuf[80];
 	int i = 0;
-	if(curpath.find(".") >= 0)
+	if(curpath.find(".") == 0)
 		printf("%d 相对路径\n",i);
 	else
 	printf("绝对路径\n");
