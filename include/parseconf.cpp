@@ -3,7 +3,8 @@
 #include <algorithm>
 #include <string.h>
 
-char* getapath(const char* rpath);
+string& getapath(string& rpath);
+//size_t setvalues(string& lines);
 parseconf::parseconf(string path):_path(path)
 {
 	cout << "confile will open..." << endl;
@@ -14,7 +15,6 @@ parseconf::parseconf(string path):_path(path)
 		cout << "You config file is not exist,So will set default value." <<endl;
 		cout << "There are the default configuration is here: "<< endl;
 		cout << "(And will be create a sample configurate file at current path.)" << endl;
-		cout << _lconf;
 	}
 }
 parseconf::parseconf()
@@ -22,13 +22,15 @@ parseconf::parseconf()
 	cout << "You not configurate it,So will set default value." <<endl;
 	cout << "There are the default configuration is here: " << endl;
 	cout << "(And will be create a sample configurate file at current path.)" << endl;
-	cout << _lconf;
 }
 // parse the configuration file
 bool parseconf::parse_conf()
 {
 	if (!(this->getfkwtab()))
 	{
+		//fix default configuration value
+		GETAPATH(_lconf.LOGPATH,PATHSEP);
+		_lconf.FULLPATH = _lconf.LOGPATH + _lconf.LOGFNAME  + LSUFFIX;
 		string sample_conf = _lconf.LOGPATH + "logsys_sample.conf";
 		_default_config_file.open(sample_conf.c_str(), ios::out | ios::binary);
 		if (!_default_config_file)
@@ -37,9 +39,14 @@ bool parseconf::parse_conf()
 			exit(1);
 		}
 		_default_config_file << _lconf._default_conf.str();
+		_default_config_file << _lconf  << "\n";
+		_default_config_file << "# Contact Me    : skybosi_fxc@163.com / feixinchenOK@gmail.com\n"
+	 						 << "# Copyright (c) Skybosi Free/Open Source Software Tool.\n";
 		_default_config_file.close();
+		cout << _lconf;
 	}
-	setconf();
+	else
+		setconf();
 	return true;
 }
 string& getapath(string& rpath)
@@ -201,22 +208,43 @@ bool parseconf::getfkwtab()
 		if (!isblank(line.c_str()))
 		{
 			size_t pos = line.find("=");
-			key = line.substr(0, pos);
-			transform(key.begin(), key.end(), key.begin(), ::toupper);
-			value = line.substr(pos + 1);
-			if (!isblank(key.c_str()))
+			//size_t pos = setvalues(line);
+			if(pos != std::string::npos)
 			{
-				_kws.insert(pair < string, string > (trim(key), trim(value)));
-				//	 	cout << "key :" << key << "\t\t";
-				//		cout << "value:" << value << endl;
+				key = line.substr(0, pos);
+				transform(key.begin(), key.end(), key.begin(), ::toupper);
+				value = line.substr(pos + 1);
+				if (!isblank(key.c_str()))
+				{
+					_kws.insert(pair < string, string > (trim(key), trim(value)));
+					//	 	cout << "key :" << key << "\t\t";
+					//		cout << "value:" << value << endl;
+				}
+			}
+			else //not a good configurate
+			{
+				cout << "not a good configurate" << endl;
+				continue;
 			}
 		}
 	}
 	return true;
 }
-
-
-
+/*
+size_t setvalues(string& lines)
+{
+	size_t pos;
+	if((pos = lines.find(":=")) != std::string::npos || 
+       (pos = lines.find("+=")) != std::string::npos || 
+       (pos = lines.find("="))  != std::string::npos || 
+       (pos = lines.find(":"))  != std::string::npos ) 
+	{
+		return pos;
+	}
+	else
+		return std::string::npos; 
+}
+*/
 // delete the comment (while way is true)
 string del_coment(string & soustr, string head, string tail, bool way)
 {

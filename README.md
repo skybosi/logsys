@@ -24,15 +24,71 @@ The log file is update or recreate when the file's size is bigger than the DEFAU
 - makefile -- ***makefile get logsys.so or logsys.a***
 - README.md
 - src
+ - log.cpp -- ***only test the log system program***
  - log_main.cpp -- ***test the log system program***
  - log_thread.cpp -- ***test the log system program with multi-threads***
 - test -- ***some test program when write the system, is not the part of this project***
- - format.c getlist.cpp getpath.cpp lthread.cpp parconf.c parseconf.cpp 
- - tm.c, 逗号表达式.txt, 可变参数.cpp, 可变参数函数的多级调用.cpp
- - thread
-    - Basethread.cpp Basethread.h
-    - lmutex.cpp lmutex.h
-    - test.cpp
+##log system using
+ About the log's format type:
+ log of format (***F:file M:method L:line T:thread***) 
+###like xxxFMT type,there are here: 
+- ALLFMT(_C, _X)    :show all msg in the log tip;
+- MLTFMT(_C, _X) :show methed's name,log's lines and thread id msg;
+- MLFMT(_C, _X)  :show methed's name,log's lines msg;
+- LTFMT(_C, _X)  :show log's lines and thread id msg;
+- LFMT(_C, _X)   :show log's lines msg only;
+- TFMT(_C, _X)   :show thread id msg omly.
+- NOTEs :
+ - _C : Is the class name that you print logs;
+ - _X : You want print massage ,just like printf funtion's format !
+- For example:
+```c
+    #include "log_T.h"  //logsys header file
+    #include <iostream>
+    using namespace std;
+    int main()
+    {
+        logT log("./etc/logsys.cong");
+        (log)(ALLFMT(logT,"This is a log format ALLFMT hahahhahaha!"));
+        (log)(MLTFMT(logT,"This is a log format MLTFMT hahahhahaha!"));
+        (log)(MLFMT(logT," This is a log format MLFMT hahahhahaha!"));
+        (log)(LTFMT(logT," This is a log format LTFMT hahahhahaha!"));
+        (log)(LFMT(logT,"  This is a log format LFMT hahahhahaha!"));
+        return 0;
+    }
+```
 
-
-6 directories, 36 files
+```c
+	#include "log_T.h"
+	#include <string>
+	using namespace std;
+	class test
+	{
+		public:
+			test()
+			{
+				log = new logT("./etc/logsys.conf");
+			}
+			~test()
+			{
+				if(log)
+					delete log;
+			}
+			void show()
+			{
+				(*log)(LDEBUG,ALLFMT(test,"debug debug ...%20s %9d"),"format",LOG_DEBUG);
+				cout << "Ok !" << endl;
+			}
+		public:
+			logT* log;
+	};
+	int main(int argc,char** argv)
+	{
+		test a;
+		while(times--)
+		{
+			a.show();
+		}
+		return 0;
+	}
+```

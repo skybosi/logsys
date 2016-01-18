@@ -34,16 +34,16 @@ logconf::logconf()
 		<< "# About the log's format type: \n"
 		<< "#   log of format (F:file M:method L:line T:thread) \n"
 		<< "#   like xxxFMT type,there are here: \n"
-    << "#    ALLFMT(_C, _X)	:show all msg in the log tip;\n"
+		<< "#    ALLFMT(_C, _X)	:show all msg in the log tip;\n"
 		<< "#    MLTFMT(_C, _X) :show methed's name,log's lines and thread id msg;\n"
 		<< "#    MLFMT(_C, _X)  :show methed's name,log's lines msg;\n"
 		<< "#    LTFMT(_C, _X)  :show log's lines and thread id msg;\n"
 		<< "#    LFMT(_C, _X)   :show log's lines msg only;\n"
-		<< "#    TFMT(_C, _X)   :show thread id msg omly.\n"
+		<< "#    TFMT(_C, _X)   :show thread id msg only.\n"
 		<< "#  NOTEs :\n"
 		<< "#    _C : Is the class name that you print logs;\n"
 		<< "#    _X : You want print massage ,just like printf funtion's format !\n"
-		<< "# Contact Me    : skybosi_fxc@163.com / feixinchenOK@gmail.com"
+	//	<< "# Contact Me    : skybosi_fxc@163.com / feixinchenOK@gmail.com"
 		<< endl;
 }
 
@@ -64,7 +64,6 @@ logconf& logconf::operator=(const logconf& conf)
 ostream& operator<<(ostream& out,const logconf& conf)
 {
 	return out 
-	 << "FSUNIT        = " << conf.FSUNIT << endl
 	 << "LOGFNAME      = " << conf.LOGFNAME << endl
 	 << "LOGPATH       = " << conf.LOGPATH << endl
 	 << "LOGFSIZE      = " << conf.LOGFSIZE << get_unit(conf.FSUNIT) << endl
@@ -79,16 +78,16 @@ string get_unit(FSU funit)
 	switch(funit)
 	{
 	case BYTE:
-		sunit = " BYTE";
+		sunit = " B";
 		break;
 	case KB:
-		sunit = " KB";
+		sunit = " K";
 		break;
 	case MB:
-		sunit = " MB";
+		sunit = " M";
 		break;
 	default:
-		sunit = " MB";
+		sunit = " M";
 		break;
 	}
 	return sunit;
