@@ -28,6 +28,7 @@ The log file is update or recreate when the file's size is bigger than the DEFAU
  - log_main.cpp -- ***test the log system program***
  - log_thread.cpp -- ***test the log system program with multi-threads***
 - test -- ***some test program when write the system, is not the part of this project***
+
 ##log system using
  About the log's format type:
  log of format (***F:file M:method L:line T:thread***) 
