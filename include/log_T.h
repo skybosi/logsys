@@ -32,7 +32,6 @@ class logT
 //		friend class lthread;
 	private:
 		logconf _conf;
-		parseconf _pconf;
 		//lmutex* _logmutex;
 		lthread* _checklthread;
 	private:
@@ -42,6 +41,7 @@ class logT
 		bool relname();
 	public:
 		logT(string parsefpath);
+		logT();
 //		logT(const char* parsefpath){};
 		~logT();
 		void writeL(int logtype,const char *lformat, ...);
