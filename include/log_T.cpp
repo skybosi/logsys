@@ -5,9 +5,26 @@ static string getime(bool chose);
 string & delsuffix(string & filepath);
 
 logT::logT(string parsefpath):_parsefpath(parsefpath)
-//logT::logT(const char* parsefpath):_parsefpath(parsefpath)
 {
 	cout << "logT come on" << endl;
+	_logdoc = help();
+	//_logmutex = new lmutex();
+	setlconf();
+	_curlfname = _conf.FULLPATH;
+	_checklthread = lthread::getlthread(_conf);
+	_checklthread->start();
+	//_logfile.open(_curlfname.c_str(), ios::out | ios::app | ios::binary);
+	_logfile.open( _conf.FULLPATH.c_str(), ios::out | ios::app | ios::binary);
+	if (!_logfile)
+	{
+		cerr << "logT: open log file error!" << endl;
+		exit(1);
+	}
+	// showall();
+}
+logT::logT()
+{
+	cout << "logT come on blank" << endl;
 	_logdoc = help();
 	//_logmutex = new lmutex();
 	setlconf();
@@ -52,9 +69,18 @@ void logT::setlconf()
 	//string parseconfpath = "/home/dejian.fei/myspace/git/logsys/etc/logsys.conf";
 	//string parseconfpath = "/home/dejian/myspace/git/logsys/etc/logsys.conf";
 	//string parseconfpath = "../etc/logsys.conf";
-	parseconf _pconf(_parsefpath);
-	_pconf.parse_conf();
-	_conf = _pconf._lconf;		// get configuration 
+	if(!_parsefpath.empty())
+	{
+		parseconf pconf(_parsefpath);
+		pconf.parse_conf();
+		_conf = pconf._lconf;		// get configuration
+	}
+	else
+	{
+		parseconf pconf;
+		pconf.parse_conf();
+		_conf = pconf._lconf;		// get configuration
+	}
 }
 //rename the log file when size is over
 bool logT::relname()
